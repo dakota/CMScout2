@@ -117,7 +117,7 @@ $ppatrol = isset($_GET['patrol']) ? $_GET['patrol'] : "";
      /***********Get posted varibles*************/
     if (isset($_GET['album']) && $_GET['album'] != 0) 
      {
-        $albumid = $_GET['album']; 
+        $albumid = safesql($_GET['album'], 'int'); 
      }
      if (isset($_GET['start'])) $start = $_GET['start'];
      if (!isset($start))
