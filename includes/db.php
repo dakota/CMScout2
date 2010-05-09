@@ -3,7 +3,7 @@
     FILENAME        :   db.php
     PURPOSE OF FILE :   Database class
     LAST UPDATED    :   15 January 2005
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -80,7 +80,7 @@
     {
 	}//closedatabase
 	
-	function select_query($tablename="", $special = false, $field="*") 
+	function select_query($tablename="", $special = false, $field="*", $join = array())
     {
 		global $check, $config, $debug;
         
@@ -90,7 +90,15 @@
 		}
         
         
-		$sql = "SELECT $field FROM {$this->dbprefix}$tablename ";
+		$sql = "SELECT $field FROM {$this->dbprefix}$tablename AS $tablename ";
+		if(!empty($join)) {
+			foreach($join as $joinType => $joinDetails) {
+				$joinTable = end(array_keys($joinDetails));
+				$joinConditions = end($joinDetails);
+				$sql .= $joinType . ' join ' . $this->dbprefix.$joinTable . ' as ' . $joinTable . ' on (' . $joinConditions . ') ';
+			}
+		}
+
 		if ($special) 
         {
 			$sql = $sql . $special;
