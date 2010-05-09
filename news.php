@@ -3,7 +3,7 @@
     FILENAME        :   news.php
     PURPOSE OF FILE :   Fetches news items from database
     LAST UPDATED    :   18 December 2006
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -31,7 +31,12 @@ if (!defined('SCOUT_NUKE'))
 if (isset($_GET['id']))
 {
 	$id = safesql($_GET['id'], "int");
-	$sql = $data->select_query("newscontent","WHERE id=$id AND allowed = 1");
+	$sql = $data->select_query("newscontent", "WHERE newscontent.id=$id AND allowed = 1", 'newscontent.*, news_categories.name as categoryName', array(
+		'left' => array(
+			'news_categories' => 'news_categories.id = newscontent.category_id'
+		)
+	));
+	
 	if ($sql) 
 	{
 		$newsitem = $data->fetch_array($sql);
@@ -90,11 +95,22 @@ else
     $location = "News";
     $limit = $config['numpage'];
     $start = $_GET['start'] > 0 ? $_GET['start'] : 0;
-    
-    $sort = $config['newssort'] == 1 ? "ASC" : "DESC";
-	$sql = $data->select_query("newscontent","WHERE allowed = 1 AND trash=0", "id");
-    $numnews = $data->num_rows($sql);
+    $categoryId = isset($_GET['category']) ? safesql($_GET['category'], 'int') : null;
 
+    $sort = $config['newssort'] == 1 ? "ASC" : "DESC";
+	$condition = 'WHERE allowed = 1 AND trash=0';
+	if($categoryId !== null) {
+		$condition .= ' AND category_id='.$categoryId;
+
+		if(!isset($frontpage)) {
+			$category = $data->select_fetch_one_row('news_categories', 'WHERE id=' . $categoryId);
+			$location .= ' - ' . $category['name'];
+			$tpl->assign('category', $category);
+		}
+	}
+	$sql = $data->select_query("newscontent",$condition, "count(id)");
+    $numnews = end($data->fetch_array($sql));
+	
     //Pagenation working out
     if ($numnews > 0) 
     {
@@ -121,9 +137,14 @@ else
             $prev_start=(($curr_page-1)*$limit)- $limit;
         }
     }
-    
+   
     $pagelimit = ($numnews-$start) <= $limit ? ($numnews-$start) : $limit;
-    $sql = $data->select_query("newscontent","WHERE allowed = 1 AND trash=0 ORDER BY event $sort LIMIT $start, $pagelimit");
+	$safestart = safesql($start, 'int');
+    $sql = $data->select_query("newscontent",$condition . " ORDER BY event $sort LIMIT $safestart, $pagelimit", 'newscontent.*, news_categories.name as categoryName', array(
+		'left' => array(
+			'news_categories' => 'news_categories.id = newscontent.category_id'
+		)
+	));
 	if ($sql) 
 	{
 		$news = array();

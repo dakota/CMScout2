@@ -3,7 +3,7 @@
     FILENAME        :   admin_news.php
     PURPOSE OF FILE :   Manages news
     LAST UPDATED    :   25 May 2006
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -58,7 +58,8 @@ else
         $news = safesql($_POST['editor'], "text", false);
         $title = safesql($_POST['title'], "text");
         $attachment = safesql($_POST['attachment'], "text");
-        $Add = $data->insert_query("newscontent", "NULL, $title, $news, $timestamp, $attachment, 1, 0");
+        $category_id = safesql($_POST['category_id'], "int");
+        $Add = $data->insert_query("newscontent", "NULL, $title, $news, $timestamp, $attachment, $category_id, 1, 0");
         if ($Add)
         {
             show_admin_message("News added", "$pagename");
@@ -70,8 +71,9 @@ else
         $news = safesql($_POST['editor'], "text", false);
         $title = safesql($_POST['title'], "text");
         $attachment = safesql($_POST['attachment'], "text");
-
-        $Update = $data->update_query("newscontent", "title=$title, news=$news, attachment=$attachment", "id='$id'", 'News Admin', "Updated news item $id");
+		$category_id = safesql($_POST['category_id'], "int");
+		
+        $Update = $data->update_query("newscontent", "title=$title, news=$news, attachment=$attachment, category_id=$category_id", "id='$id'", 'News Admin', "Updated news item $id");
         if ($Update)
         {
             show_admin_message("News updated", "$pagename");
@@ -160,10 +162,18 @@ else
         $sql = $data->select_query("newscontent", "WHERE trash=0 ORDER BY title ASC");
         $numnews = $data->num_rows($sql);
         $newsitems = array();
-        while ($ntemp = $data->fetch_array($sql))
+        while ($temp = $data->fetch_array($sql))
         {
             $temp['idType'] = $temp['id'] . ".news";
             $newsitems[] = $temp;
+        }
+
+        $sql = $data->select_query("news_categories", "ORDER BY name ASC");
+        $numcategories = $data->num_rows($sql);
+        $categories = array();
+        while ($temp = $data->fetch_array($sql))
+        {
+            $categories[] = $temp;
         }
 
         $tpl->assign("numalbums", $numalbums);
@@ -180,15 +190,23 @@ else
         
         $tpl->assign("numnews", $numnews);
         $tpl->assign("news", $newsitems);
+
+        $tpl->assign("numcategories", $numcategories);
+        $tpl->assign("categories",$categories);
     }
     else
     {
         // Show all news
-        $result = $data->select_query("newscontent", "WHERE trash=0 ORDER BY title DESC");
+        $result = $data->select_query("newscontent", "WHERE trash=0 ORDER BY title DESC", 'newscontent.*, news_categories.name as category_name', array(
+			'left' => array(
+				'news_categories' => 'news_categories.id = newscontent.category_id'
+			)
+		));
         
         $news = array();
         $numnews = $data->num_rows($result);
         while ($news[] = $data->fetch_array($result));
+
         $tpl->assign('numnews', $numnews);
         $tpl->assign('news', $news);
     }

@@ -3,7 +3,7 @@
     FILENAME        :   newsbox.php
     PURPOSE OF FILE :   SideBox: Fetches news items from database
     LAST UPDATED    :   24 May 2005
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -28,7 +28,13 @@
 if (!defined('SCOUT_NUKE'))
     die("You have accessed this page illegally, please go use the main menu");
 
-	$content = $data->select_query("newscontent","WHERE allowed = 1 AND trash=0 ORDER BY event DESC LIMIT {$config['numsidebox']}");
+	$condition = 'WHERE allowed = 1 AND trash=0';
+
+	if($sideboxMenuItem['option'] !== 0) {
+		$condition .= ' AND category_id='.$sideboxMenuItem['option'];
+	}
+
+	$content = $data->select_query("newscontent", $condition . " ORDER BY event DESC LIMIT {$config['numsidebox']}");
 	if ($content) 
     {
 		$newsbox = array();
