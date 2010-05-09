@@ -3,7 +3,7 @@
     FILENAME        :   menu.php
     PURPOSE OF FILE :   Builds the menu
     LAST UPDATED    :   1 June 2006
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -162,19 +162,20 @@ if (!$config['disablesite'])
                                             {
                                                 $menus = false;
                                                 $sub =true;
-						if($data->num_rows($data->select_query("functions", "WHERE active = 1 AND code = '{$functionList[$items['item']]['mainmodule']}'")) > 0)
-					       {
-							if ($functionList[$subitems['item']]['filetouse'] != "" && file_exists("sidebox/{$functionList[$subitems['item']]['filetouse']}".$phpex))
-							{
-							    include("sidebox/{$functionList[$subitems['item']]['filetouse']}".$phpex);
-							}
-							if (!$menus)
-							{
-							    $menu[$side][$catnum[$side]]['items'][$itemnum]['subitem'][$subitemnum]['type'] = 4;
-							    $menu[$side][$catnum[$side]]['items'][$itemnum]['subitem'][$subitemnum]['name'] = $subitems['name'];
-							    $menu[$side][$catnum[$side]]['items'][$itemnum]['subitem'][$subitemnum]['link'] = $functionList[$subitems['item']]['code'];
-							}
-						}
+												if($data->num_rows($data->select_query("functions", "WHERE active = 1 AND code = '{$functionList[$items['item']]['mainmodule']}'")) > 0)
+												{
+													if ($functionList[$subitems['item']]['filetouse'] != "" && file_exists("sidebox/{$functionList[$subitems['item']]['filetouse']}".$phpex))
+													{
+														$sideboxMenuItem = $subitems;
+														include("sidebox/{$functionList[$subitems['item']]['filetouse']}".$phpex);
+													}
+													if (!$menus)
+													{
+														$menu[$side][$catnum[$side]]['items'][$itemnum]['subitem'][$subitemnum]['type'] = 4;
+														$menu[$side][$catnum[$side]]['items'][$itemnum]['subitem'][$subitemnum]['name'] = $subitems['name'];
+														$menu[$side][$catnum[$side]]['items'][$itemnum]['subitem'][$subitemnum]['link'] = $functionList[$subitems['item']]['code'];
+													}
+												}
                                             }
                                             else
                                             {
@@ -272,20 +273,21 @@ if (!$config['disablesite'])
                                     if (isset($functionList[$items['item']]['code']))
                                     {
                                         $menus = false;
-					if($data->num_rows($data->select_query("functions", "WHERE active = 1 AND code = '{$functionList[$items['item']]['mainmodule']}'")) > 0)
-					{
-						 if ($functionList[$items['item']]['filetouse'] != "" && file_exists("sidebox/{$functionList[$items['item']]['filetouse']}".$phpex))
-						{
-						    include("sidebox/{$functionList[$items['item']]['filetouse']}".$phpex);
-						}
-						if (!$menus)
-						{
-						    $menu[$side][$catnum[$side]]['items'][$itemnum]['type'] = 4;
-						    $menu[$side][$catnum[$side]]['items'][$itemnum]['name'] = $items['name'];
-                            $menu[$side][$catnum[$side]]['items'][$itemnum]['id'] = $items['id'];
-						    $menu[$side][$catnum[$side]]['items'][$itemnum]['link'] = $functionList[$items['item']]['code'];
-						}
-					}
+										if($data->num_rows($data->select_query("functions", "WHERE active = 1 AND code = '{$functionList[$items['item']]['mainmodule']}'")) > 0)
+										{
+											if ($functionList[$items['item']]['filetouse'] != "" && file_exists("sidebox/{$functionList[$items['item']]['filetouse']}".$phpex))
+											{
+												$sideboxMenuItem = $items;
+												include("sidebox/{$functionList[$items['item']]['filetouse']}".$phpex);
+											}
+											if (!$menus)
+											{
+												$menu[$side][$catnum[$side]]['items'][$itemnum]['type'] = 4;
+												$menu[$side][$catnum[$side]]['items'][$itemnum]['name'] = $items['name'];
+												$menu[$side][$catnum[$side]]['items'][$itemnum]['id'] = $items['id'];
+												$menu[$side][$catnum[$side]]['items'][$itemnum]['link'] = $functionList[$items['item']]['code'];
+											}
+										}
                                     }
                                     else
                                     {
