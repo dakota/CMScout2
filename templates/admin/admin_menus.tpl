@@ -331,37 +331,49 @@ function itemss()
     {/if}
      <label for="items" class="label">Item<span class="hintanchor" title="Location of link."><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label> 
     <div class="inputboxwrapper"><select name="items" id="items" class="inputbox" onchange="itemss();">
-      <option value="url" {if $item.type == 5 || $item == ''}selected="selected"{/if}>External Link</option>
-      <optgroup label="Static Pages">
-      {section name=pages loop=$numpages}
-        <option value="{$page[pages].id}.stat" {if $item.item == $page[pages].id && $item.type == 1}selected="selected"{/if}>{if $page[pages].friendly == ""}{$page[pages].name}{else}{$page[pages].friendly}{/if}</option> 
-     {/section}	  
-     </optgroup>
-    <optgroup label="Dynamic Pages">
-      {section name=function loop=$numfunc}
-      {if $func[function].type == 2}<option value="{$func[function].id}.dyn" {if $item.item == $func[function].id && $item.type == 2}selected="selected"{/if}>{$func[function].name}</option>{/if}
-      {/section}
-      </optgroup>
-     <optgroup label="Articles">
-      {section name=pages loop=$numarts}
-      <option value="{$articles[pages].ID}.art" {if $item.item == $articles[pages].ID && $item.type == 6}selected="selected"{/if}>{$articles[pages].title}</option> 
-     {/section}	  
-     </optgroup>
-     <optgroup label="Sub Sites">
-      {section name=pages loop=$numsub}
-      <option value="{$subsite[pages].id}.sub" {if $item.item == $subsite[pages].id && $item.type == 4}selected="selected"{/if}>{$subsite[pages].name}</option> 
-     {/section}	  
-     </optgroup>
-     <optgroup label="Group Sites">
-      {section name=pages loop=$numgroups}
-      <option value="{$groups[pages].id}.group" {if $item.item == $groups[pages].id && $item.type == 7}selected="selected"{/if}>{$groups[pages].teamname}</option> 
-     {/section}	  
-     </optgroup>
-    <optgroup label="Side Boxes">
-      {section name=function loop=$numfunc}
-      {if $func[function].type == 1}<option value="{$func[function].id}.box" {if $item.item == $func[function].id && $item.type == 3}selected="selected"{/if}>{$func[function].name}</option>{/if}
-      {/section}
-      </optgroup>
+		<option value="url" {if $item.type == 5 || $item == ''}selected="selected"{/if}>External Link</option>
+		{if $numpages > 0}
+			<optgroup label="Static Pages">
+				{section name=pages loop=$numpages}
+					<option value="{$page[pages].id}.stat" {if $item.item == $page[pages].id && $item.type == 1}selected="selected"{/if}>{if $page[pages].friendly == ""}{$page[pages].name}{else}{$page[pages].friendly}{/if}</option>
+				{/section}
+			</optgroup>
+		{/if}
+		{if $numfunc > 0}
+			<optgroup label="Dynamic Pages">
+				{section name=function loop=$numfunc}
+					{if $func[function].type == 2}<option value="{$func[function].id}.dyn" {if $item.item == $func[function].id && $item.type == 2}selected="selected"{/if}>{$func[function].name}</option>{/if}
+				{/section}
+			</optgroup>
+		{/if}
+		{if $numarts > 0}
+			<optgroup label="Articles">
+				{section name=pages loop=$numarts}
+					<option value="{$articles[pages].ID}.art" {if $item.item == $articles[pages].ID && $item.type == 6}selected="selected"{/if}>{$articles[pages].title}</option>
+				{/section}
+			</optgroup>
+		{/if}
+		{if $numsub > 0}
+			<optgroup label="Sub Sites">
+				{section name=pages loop=$numsub}
+					<option value="{$subsite[pages].id}.sub" {if $item.item == $subsite[pages].id && $item.type == 4}selected="selected"{/if}>{$subsite[pages].name}</option>
+				{/section}
+			</optgroup>
+		{/if}
+		{if $numgroups > 0}
+			<optgroup label="Group Sites">
+				{section name=pages loop=$numgroups}
+					<option value="{$groups[pages].id}.group" {if $item.item == $groups[pages].id && $item.type == 7}selected="selected"{/if}>{$groups[pages].teamname}</option>
+				{/section}
+			</optgroup>
+		{/if}
+		{if $numfunc > 0}
+			<optgroup label="Side Boxes">
+				{section name=function loop=$numfunc}
+					{if $func[function].type == 1}<option value="{$func[function].id}.box" {if $item.item == $func[function].id && $item.type == 3}selected="selected"{/if}>{$func[function].name}</option>{/if}
+				{/section}
+			</optgroup>
+		{/if}
     </select></div><br />
     
      <div id="urldiv" style="display: {if $item.type != 5 && $action == 'edititem'}none;{else}'';{/if}">

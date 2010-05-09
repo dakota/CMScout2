@@ -3,7 +3,7 @@
     FILENAME        :   activate.php
     PURPOSE OF FILE :   Activates accounts
     LAST UPDATED    :   09 May 2006
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -25,74 +25,83 @@
 **************************************************************************/
 ?>
 <?php
-$bit = "../";
-require_once ("{$bit}includes/error_handling.php");
-set_error_handler('ErrorHandler');
-error_reporting(E_ERROR|E_PARSE);
-$upgrader = false;
-$limitedStartup = true;
-require_once("{$bit}common.php");
+if (!isset($included)) {
+	$bit = "../";
+	require_once ("{$bit}includes/error_handling.php");
+	set_error_handler('ErrorHandler');
+	error_reporting(E_ERROR|E_PARSE);
+	$upgrader = false;
+	$limitedStartup = true;
+	require_once("{$bit}common.php");
 
-foreach ($_GET as $value => $throwAway)
-{
-  break;
+	foreach ($_GET as $value => $throwAway)
+	{
+	  break;
+	}
+	$item = explode("_", $value);
+	$item[0] = safesql($item[0], "int");
+	echo getOptions($item[0], $item[1]);
 }
-$item = explode("_", $value);
 
-$item[0] = safesql($item[0], "int");
-switch ($item[1])
-{
-    case "dynamic":
-    case "dyn":
-    case "box":
-      $itemDetails = $data->select_fetch_one_row("functions", "WHERE id={$item[0]}");
-      $itemOptions = explode(",", $itemDetails['options']);
-      if ($itemOptions[0] != "")
-      {
-        $itemSectionSql = $data->select_query($itemOptions[0], "ORDER BY {$itemOptions[2]}", "{$itemOptions[1]},{$itemOptions[2]}");
-        echo "<label for=\"options\" class=\"label\">{$itemOptions[4]}</label> 
-           <div class=\"inputboxwrapper\">
-           <select name=\"options\" id=\"options\" class=\"inputbox\">
-           <option value=\"0\">{$itemOptions[3]}</option>";
-           while ($temp = $data->fetch_array($itemSectionSql))
-           {
-             echo "<option value=\"{$temp[$itemOptions[1]]}\">{$temp[$itemOptions[2]]}</option>";
-           }
-        echo "</select>
-        </div><br />";
-      }
-      break;
-    case "sub":
-      $itemSectionSql = $data->select_query("static_content", "WHERE type=2 AND pid = {$item[0]} ORDER BY friendly", "id,friendly");
-      echo "<label for=\"options\" class=\"label\">Page</label> 
-         <div class=\"inputboxwrapper\">
-         <select name=\"options\" id=\"options\" class=\"inputbox\">
-         <option value=\"0\">Site home page</option>";
-         while ($temp = $data->fetch_array($itemSectionSql))
-         {
-           echo "<option value=\"{$temp['id']}\">{$temp['friendly']}</option>";
-         }
-      echo "</select>
-      </div><br />";
-      break;
-    case "group":
-      $itemSectionSql = $data->select_query("static_content", "WHERE type=1 AND pid = {$item[0]} ORDER BY friendly", "id,friendly");
-      echo "<label for=\"options\" class=\"label\">Page</label> 
-         <div class=\"inputboxwrapper\">
-         <select name=\"options\" id=\"options\" class=\"inputbox\">
-         <option value=\"0\">Site home page</option>";
-         while ($temp = $data->fetch_array($itemSectionSql))
-         {
-           echo "<option value=\"{$temp['id']}\">{$temp['friendly']}</option>";
-         }
-      echo "</select>
-      </div><br />";      
-      break;
-    case "art":
-      break;
-    case "static":
-    case "stat":
-      break;
+function getOptions($itemId, $itemType, $selectedOption = 0) {
+	global $data;
+
+	$output = '';
+	switch ($itemType)
+	{
+		case "dynamic":
+		case "dyn":
+		case "box":
+		  $itemDetails = $data->select_fetch_one_row("functions", "WHERE id={$itemId}");
+		  $itemOptions = explode(",", $itemDetails['options']);
+		  if ($itemOptions[0] != "")
+		  {
+			$itemSectionSql = $data->select_query($itemOptions[0], "ORDER BY {$itemOptions[2]}", "{$itemOptions[1]},{$itemOptions[2]}");
+			$output .= "<label for=\"options\" class=\"label\">{$itemOptions[4]}</label>
+			   <div class=\"inputboxwrapper\">
+			   <select name=\"options\" id=\"options\" class=\"inputbox\">
+			   <option value=\"0\" ".($selectedOption==0?'selected="selected"':'').">{$itemOptions[3]}</option>";
+			   while ($temp = $data->fetch_array($itemSectionSql))
+			   {
+				 $output .= "<option value=\"{$temp[$itemOptions[1]]}\" ".($selectedOption==$temp[$itemOptions[1]]?'selected="selected"':'').">{$temp[$itemOptions[2]]}</option>";
+			   }
+			$output .= "</select>
+			</div><br />";
+		  }
+		  break;
+		case "sub":
+		  $itemSectionSql = $data->select_query("static_content", "WHERE type=2 AND pid = {$itemId} ORDER BY friendly", "id,friendly");
+		  $output .= "<label for=\"options\" class=\"label\">Page</label>
+			 <div class=\"inputboxwrapper\">
+			 <select name=\"options\" id=\"options\" class=\"inputbox\">
+			 <option value=\"0\" ".($selectedOption==0?'selected="selected"':'').">Site home page</option>";
+			 while ($temp = $data->fetch_array($itemSectionSql))
+			 {
+			   $output .= "<option value=\"{$temp['id']}\" ".($selectedOption==$temp['id']?'selected="selected"':'').">{$temp['friendly']}</option>";
+			 }
+		  $output .= "</select>
+		  </div><br />";
+		  break;
+		case "group":
+		  $itemSectionSql = $data->select_query("static_content", "WHERE type=1 AND pid = {$itemId} ORDER BY friendly", "id,friendly");
+		  $output .= "<label for=\"options\" class=\"label\">Page</label>
+			 <div class=\"inputboxwrapper\">
+			 <select name=\"options\" id=\"options\" class=\"inputbox\">
+			 <option value=\"0\" ".($selectedOption==0?'selected="selected"':'').">Site home page</option>";
+			 while ($temp = $data->fetch_array($itemSectionSql))
+			 {
+			   $output .= "<option value=\"{$temp['id']}\" ".($selectedOption==$temp['id']?'selected="selected"':'').">{$temp['friendly']}</option>";
+			 }
+		  $output .= "</select>
+		  </div><br />";
+		  break;
+		case "art":
+		case "static":
+		case "stat":
+		  break;
+	}
+
+	return $output;
 }
 
 ?>
