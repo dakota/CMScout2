@@ -37,6 +37,34 @@ document.location = "{$pagename}&action=delete&id=" + articleId;
 <div align="center">No items on Home Page</div>
 {/if}
 {elseif $action=="new" || $action=="edit"}
+  <script type="text/javascript">
+{literal}
+function show(id)
+{
+    document.getElementById(id).style.display = "";
+}
+
+function hide(id)
+{
+    document.getElementById(id).style.display = "none";
+}
+
+function itemss()
+{
+    var urlenabled = {/literal}{if $numpages > 0}true{else}false{/if}{literal};
+    if (document.form2.itemid.selectedIndex==0 && urlenabled == true)
+    {
+        hide('optiondiv');
+    }
+    else
+    {
+        show('optiondiv');
+        var url = "admin/get_menu_options_ajax.php";
+        var myAjax1 = new Ajax(url, {method: 'get',update: $('optiondiv')}).request(document.form2.itemid.value);
+    }
+}
+{/literal}
+</script>
 <form name="form2" method="post" action="">
 <div align="center">
 <fieldset class="formlist">
@@ -44,7 +72,7 @@ document.location = "{$pagename}&action=delete&id=" + articleId;
 <div class="field">
     
     <label class="label" for="itemid">Page<span class="hintanchor" title="Select the Home Page item."><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label>
-    <div class="inputboxwrapper"><select name="itemid" id="itemid" class="inputbox">
+    <div class="inputboxwrapper"><select name="itemid" id="itemid" class="inputbox" onchange="itemss();">
       <option value="0" {if $item.item == 0}selected="selected"{/if}>Select a Page</option>
     <optgroup label="Dynamic">
       {section name=function loop=$numfunc}
@@ -57,7 +85,13 @@ document.location = "{$pagename}&action=delete&id=" + articleId;
      {/section}	  
      </optgroup>
     </select></div><br />
-    </div>
+
+	<div id="optiondiv" style="display: {if !$options || $action != 'edit'}none;{else}'';{/if}">
+		{if $options}
+			{$options}
+		{/if}
+	</div>
+</div>
     
     <div class="submitWrapper">
     <input type="submit" name="Submit" value="Submit" class="button" />

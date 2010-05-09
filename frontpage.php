@@ -3,7 +3,7 @@
     FILENAME        :   welcome.php
     PURPOSE OF FILE :   Builds the frontpage
     LAST UPDATED    :   13 February 2006
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -49,10 +49,22 @@ while ($item = $data->fetch_array($frontsql))
     $stuff = $data->fetch_array($funsql);
 
     if (get_auth($stuff['code'], 0)==1)
-    {    
+    {
+		$functionOptions = explode(',', $stuff['options']);
+		$functionOptions = explode('&amp;', $functionOptions[5]);
+		$preGet = $_GET;
+		foreach($functionOptions as $functionOption) {
+			if(strpos($functionOption, '=') !== false) {
+				$functionOption = explode('=', trim($functionOption));
+				$_GET[$functionOption[0]] = str_replace('!#id#!', $item['option'], $functionOption[1]);
+			}
+		}
+
         if (file_exists($stuff['code'] . $phpex)) 
         {
+			$frontpage = true;
             include($stuff['code'] . $phpex);
+			$_GET = $preGet;
         }
         
         if ($dbpage == true && isset($pagename) && $pagename != "" && $pagename != "frontpage") 

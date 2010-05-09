@@ -3,7 +3,7 @@
     FILENAME        :   admin_frontpage.php
     PURPOSE OF FILE :   Manage frontpage items
     LAST UPDATED    :   25 May 2006
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -71,12 +71,14 @@ else
             $itemid = safesql($temp[0], "int");
             $type = safesql(($temp[1]=="dynamic" ? 1 : 0), "int"); 
             $pos = 1;
-            do 
+            $itemid = safesql($temp[0], "int");
+			$option = safesql($_POST['options'], "int");
+			do
             {
                 $temp = $data->select_query("frontpage", "WHERE pos = '$pos'");
                 if ($data->num_rows($temp) != 0) {$pos++;}
             } while ($data->num_rows($temp) != 0); 	
-            $sql = $data->insert_query("frontpage", "NULL, $itemid, $type, '$pos'");
+            $sql = $data->insert_query("frontpage", "NULL, $itemid, $type, '$pos', $option");
             if ($sql)
             {
                 show_admin_message("Item added", "$pagename");
@@ -87,8 +89,9 @@ else
         {
             $temp = explode(".", $_POST['itemid']);
             $itemid = safesql($temp[0], "int");
-            $type = safesql(($temp[1]=="dynamic" ? 1 : 0), "int"); 
-            $sql = $data->update_query("frontpage", "item = $itemid, type = $type", "id=$id");
+            $type = safesql(($temp[1]=="dynamic" ? 1 : 0), "int");
+			$option = safesql($_POST['options'], "int");
+            $sql = $data->update_query("frontpage", "item = $itemid, type = $type, `option`=$option", "id=$id");
             if ($sql)
             {
                 show_admin_message("Item updated", "$pagename");
@@ -125,6 +128,18 @@ else
         {
             $sql = $data->select_query("frontpage", "WHERE id=$id");
             $item = $data->fetch_array($sql);
+			
+			$included = true;
+			include('get_menu_options_ajax.php');
+
+			$types = array(
+				'1' => 'dyn',
+			);
+
+			$options = getOptions($item['item'], $types[$item['type']], $item['option']);
+
+			$tpl->assign("options", $options);
+
             $tpl->assign('item', $item);
         }
         
