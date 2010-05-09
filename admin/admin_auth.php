@@ -3,7 +3,7 @@
     FILENAME        :   admin_auth.php
     PURPOSE OF FILE :   Manage access authorizations
     LAST UPDATED    :   26 May 2006
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -49,7 +49,7 @@ else
       $editFormAction .= "?" . htmlentities($_SERVER['QUERY_STRING']);
     }
     
-    $id = $_GET['id'];
+    $id = safesql($_GET['id'],'int');
     $action = $_GET['action'];
     $submit = $_POST['Submit'];
     

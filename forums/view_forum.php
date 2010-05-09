@@ -3,7 +3,7 @@
     FILENAME        :   view_forum.php
     PURPOSE OF FILE :   Displays main forum view, and seperate forum views
     LAST UPDATED    :   19 July 2006
-    COPYRIGHT       :   © 2006 CMScout Group
+    COPYRIGHT       :   ï¿½ 2006 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -239,7 +239,8 @@ else
     $numtopics = $data->num_rows($sql);
     
     $pagelimit = ($numtopics-$start) <= $limit ? ($numtopics-$start) : $limit;
-    $sql = $data->select_query("forumtopics", "WHERE forum=$fid AND type = 0 ORDER BY lastdate DESC LIMIT $start, $pagelimit");
+	$safestart = safesql($start, 'int');
+    $sql = $data->select_query("forumtopics", "WHERE forum=$fid AND type = 0 ORDER BY lastdate DESC LIMIT $safestart, $pagelimit");
     $topics = array();
     while($temp = $data->fetch_array($sql))
     {

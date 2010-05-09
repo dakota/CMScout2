@@ -3,7 +3,7 @@
     FILENAME        :   patrollog.php
     PURPOSE OF FILE :   Displays group logs
     LAST UPDATED    :   23 May 2006
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -83,13 +83,14 @@ if ($action != "add")
         
               
         $pagelimit = ($numlog-$start) <= $limit ? ($numlog-$start) : $limit;
+		$safestart = safesql($start, 'int');
         if ($privateitems)
         {
-            $sql = $data->select_query("patrollog", "WHERE `group`=$safe_patrolid ORDER BY `dateposted` ASC LIMIT $start, $pagelimit");
+            $sql = $data->select_query("patrollog", "WHERE `group`=$safe_patrolid ORDER BY `dateposted` ASC LIMIT $safestart, $pagelimit");
         }
         else
         {
-            $sql = $data->select_query("patrollog", "WHERE `group`=$safe_patrolid AND private != 1 ORDER BY `dateposted` ASC LIMIT $start, $pagelimit");
+            $sql = $data->select_query("patrollog", "WHERE `group`=$safe_patrolid AND private != 1 ORDER BY `dateposted` ASC LIMIT $safestart, $pagelimit");
         }
         
         $logbook = array();

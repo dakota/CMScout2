@@ -3,7 +3,7 @@
     FILENAME        :   admin_downloads.php
     PURPOSE OF FILE :   Manage downloads and download categories
     LAST UPDATED    :   25 May 2006
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -51,12 +51,11 @@ else
     }
     
     $action = $_GET['action'];
-    $id = $_GET['id'];
-    $did = $_GET['did'];
+    $id = safesql($_GET['id'], 'int');
+    $did = safesql($_GET['did'], 'int');
     
     if ($action == 'delete' && pageauth("downloads", "delete") == 1) 
     {
-        $id = safesql($id, "int");
         $sqlq = $data->delete_query("download_cats", "id=$id", "", "", false);
         if ($sqlq) 
         { 
@@ -69,7 +68,6 @@ else
     } 
     elseif ($action == "deletedown" && pageauth("downloads", "delete") == 1) 
     {
-        $did = safesql($did, "int");
         $sqlq = $data->update_query("downloads", "trash=1", "id=$did");
         $action = "view";
         if ($sqlq)
@@ -79,7 +77,6 @@ else
     }
     elseif ($action == 'publish' && pageauth("downloads", "publish") == 1) 
     {
-        $did= safesql($did, "int");
         $sqlq = $data->update_query("downloads", "allowed = 1", "id=$did", "Downloads", "Published $did");
         if ($data->num_rows($data->select_query("review", "WHERE item_id=$id AND type='download'")))
         {        
@@ -91,13 +88,11 @@ else
     }
     elseif ($action == 'unpublish' && pageauth("downloads", "publish") == 1) 
     {
-        $did= safesql($did, "int");
         $sqlq = $data->update_query("downloads", "allowed = 0", "id=$did", "Downloads", "Unpublished $did");
         header("Location: $pagename&action=view&id=$id");
     }
     elseif ($action == "down")
     {
-        $did= safesql($did, "int");
         $sql = $data->select_query("downloads", "WHERE id=$did");
         $down = $data->fetch_array($sql);
         if (file_exists($config["downloadpath"] . '/' . $down['saved_file']) && $data->num_rows($sql) > 0) 
@@ -148,7 +143,6 @@ else
             $picture = safesql($_POST['downloadphoto'], "text");
             $where = $config['downloadpath'] . "/";
             $cat = safesql($_POST['cat'], "text");
-            $did = safesql($did, "int");
             
             $event = $_GET['event'];
             if ($_FILES['file']['name'] != "")

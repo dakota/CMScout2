@@ -3,7 +3,7 @@
     FILENAME        :   admin_advancements.php
     PURPOSE OF FILE :   Manages award schemes
     LAST UPDATED    :   25 May 2006
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -189,7 +189,7 @@ else
         } 
         elseif ($action == "editreq" && pageauth("advancements", "edit")) 
         {
-            $reqid = $_GET['rid'];
+            $reqid = safesql($_GET['rid'], "int");
             $req= safesql($_POST['req'], "text");
             $desc= safesql($_POST['desc'], "text");
             $sql = $data->update_query("requirements", "item = $req, description = $desc","id = '$reqid'", "Advancements", "Changed $reqid to $req");
@@ -310,7 +310,7 @@ else
         $result = $data->select_query("advancements", "WHERE id = '$id'");
         $row = $data->fetch_array($result);
         $advan = $row['advancement'];
-        $rid = $_GET['rid'];
+        $rid = safesql($_GET['rid'], 'int');
         $result = $data->select_query("requirements", "WHERE id = '$rid'");
         $row = $data->fetch_array($result);
         $tpl->assign("requirement", $row);	

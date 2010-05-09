@@ -3,7 +3,7 @@
     FILENAME        :   calender.php
     PURPOSE OF FILE :   Displays the calender
     LAST UPDATED    :   24 September 2006
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -32,50 +32,8 @@ $location = "Calendar";
 function number_days($month)
 {
     global $year;
-    switch($month)
-    {
-        case 1:
-            $numdays = 31;
-            break;
-        case 2:
-            if (($year%4 == 0) || ($year%100 == 0 && $year%400 == 0))
-                $numdays =  29;
-            else
-                $numdays =  28;  
-            break;
-        case 3:
-            $numdays =  31;
-            break;
-        case 4:
-            $numdays =  30;
-            break;
-        case 5:
-            $numdays = 31;
-            break;
-        case 6:
-            $numdays = 30;
-            break;
-        case 7:
-            $numdays = 31;
-            break;
-        case 8:
-            $numdays = 31;
-            break;
-        case 9:
-            $numdays = 30;
-            break;
-        case 10:
-            $numdays = 31;
-            break;
-        case 11:
-            $numdays = 30;
-            break;
-        case 12:
-            $numdays = 31;
-            break;
-    }
-    
-    return $numdays;
+
+	return date('d', mktime(0,0,0,$month+1,0,$year));
 }
 
 
@@ -397,8 +355,8 @@ if ($_GET['action'] != "ical")
         if ($_GET['view'] == "year" || ($_GET['view'] == "" && $config['defaultview'] == "Year"))
         {           
             $summaries = array();
-            $yearstart = strtotime("01/01/$year 00:00:00");
-            $yearend = strtotime("12/31/$year 23:59:59"); 
+            $yearstart = safesql(strtotime("01/01/$year 00:00:00"), 'text');
+            $yearend = safesql(strtotime("12/31/$year 23:59:59"), 'text');
 	
             $calitems = $data->select_fetch_all_rows($numcalendar, "calendar_items", "WHERE  ((startdate >= $yearstart OR enddate >= $yearstart) AND startdate <= $yearend) AND allowed=1 AND trash=0 ORDER BY startdate ASC");
 
@@ -621,8 +579,8 @@ if ($_GET['action'] != "ical")
                 */
             $weekStartDayNumber = $config['startday'] != 0 ? $config['startday']: 1 ;
             
-            $monthstart = strtotime("$year-$monthnum-01 00:00:00 ");
-            $monthend = strtotime("$year-$monthnum-$days 23:59:59");
+            $monthstart = safesql(strtotime("$year-$monthnum-01 00:00:00 "), 'text');
+            $monthend = safesql(strtotime("$year-$monthnum-$days 23:59:59"), 'text');
 
             $items = array();
             $maxHeight = 1;
@@ -987,8 +945,8 @@ if ($_GET['action'] != "ical")
             </form>";
             
             $days = number_days($monthnum);
-            $monthStart = strtotime("$year-$monthnum-01 00:00:00");
-            $monthEnd = strtotime("$year-$monthnum-$days 23:59:59");
+            $monthStart = safesql(strtotime("$year-$monthnum-01 00:00:00"), 'text');
+            $monthEnd = safesql(strtotime("$year-$monthnum-$days 23:59:59"), 'text');
             $numcalendar = 0;
             $calitems = $data->select_fetch_all_rows($numcalendar, "calendar_items", "WHERE ((((startdate >= $monthStart OR enddate >= $monthEnd) AND startdate <= $monthEnd) OR (startdate <= $monthStart AND enddate >= $monthStart)) AND allowed=1 AND trash=0) ORDER BY startdate ASC");
 

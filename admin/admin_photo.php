@@ -3,7 +3,7 @@
     FILENAME        :   admin_photo.php
     PURPOSE OF FILE :   Manages photos and photo albums
     LAST UPDATED    :   25 May 2006
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -62,7 +62,7 @@ else
         }
         elseif ($action == "deletephoto" && pageauth("photo", "delete") == 1) 
         {
-            $pid = $_GET['pid'];
+            $pid = safesql($_GET['pid'], 'int');
             $sqlq = $data->delete_query("photos", "ID=$pid AND album_id='$id'");
             $act = "view";
             if($sqlq)
@@ -93,13 +93,13 @@ else
         }
         elseif ($action == 'publishphoto' && pageauth("photo", "publish") == 1) 
         {
-            $pid = $_GET['pid'];
+            $pid = safesql($_GET['pid'], 'int');
             $sqlq = $data->update_query("photos", "allowed = 1", "ID=$pid", "Photos", "Published $id");
             header("Location: $pagename&action=view&id=$id");
         }
         elseif ($action == 'unpublishphoto' && pageauth("photo", "publish") == 1) 
         {
-            $pid = $_GET['pid'];
+            $pid = safesql($_GET['pid'], 'int');
             $sqlq = $data->update_query("photos", "allowed = 0", "ID=$pid", "Photos", "Unpublished $id");
             header("Location: $pagename&action=view&id=$id");
         }

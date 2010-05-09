@@ -3,7 +3,7 @@
     FILENAME        :   view_topic.php
     PURPOSE OF FILE :   Allows viewing of a topic
     LAST UPDATED    :   5 June 2006
-    COPYRIGHT       :   © 2006 CMScout Group
+    COPYRIGHT       :   ï¿½ 2006 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -107,7 +107,8 @@ if ($tid != 'NULL')
     } 
 
     $pagelimit = ($numposts-$start) <= $limit ? ($numposts-$start) : $limit;
-    $sql = $data->select_query("forumposts", "WHERE topic=$tid ORDER BY dateposted ASC LIMIT $start, $pagelimit");
+	$safestart = safesql($start, 'int');
+    $sql = $data->select_query("forumposts", "WHERE topic=$tid ORDER BY dateposted ASC LIMIT $safestart, $pagelimit");
     $posts = array();
     while($temp = $data->fetch_array($sql))
     {

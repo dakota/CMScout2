@@ -74,18 +74,18 @@ else
         $content = safesql($content, "text", false);
         if ($content == NULL || $content == "" ||$content == "NULL") $content = "Nothing here";
         $public = safesql($_POST['public'], "int");
-	if ($data->num_rows($data->select_query("static_content", "WHERE name=$name")) == 0)
-	{
-		$Update = $data->insert_query("static_content", "NULL, $name, $content, $friendly, 2, 0, $safe_siteid, 0, 0");
-		if($Update)
+		if ($data->num_rows($data->select_query("static_content", "WHERE name=$name")) == 0)
 		{
-		    show_admin_message("Content added", "admin.php?page=subsite&subpage=subcontent&sid=$siteid");
+			$Update = $data->insert_query("static_content", "NULL, $name, $content, $friendly, 2, 0, $safe_siteid, 0, 0");
+			if($Update)
+			{
+				show_admin_message("Content added", "admin.php?page=subsite&subpage=subcontent&sid=$siteid");
+			}
 		}
-	}
-	else
-	{
-		    show_admin_message("Item with that name already exists", "admin.php?page=subsite&subpage=subcontent&sid=$siteid&action=new", true);  
-	}
+		else
+		{
+				show_admin_message("Item with that name already exists", "admin.php?page=subsite&subpage=subcontent&sid=$siteid&action=new", true);  
+		}
     }
     
     // Show specific content
@@ -154,7 +154,7 @@ else
     }
 
     // Show all news
-    $result = $data->select_query("static_content", "WHERE type=2 AND pid=$safe_siteid ORDER BY friendly ASC");
+    $result = $data->select_query("static_content", "WHERE type=2 AND pid=$safe_siteid AND trash = 0 ORDER BY friendly ASC");
     
     $content = array();
     $content[] = $data->fetch_array($result);

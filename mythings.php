@@ -3,7 +3,7 @@
     FILENAME        :   mythings.php
     PURPOSE OF FILE :   Displays items that a user owns. Allows user to edit those items (And add new items).
     LAST UPDATED    :   24 September 2006
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -174,7 +174,7 @@ if ($cat != "" || $action != "")
             
             if($action=="delphoto")
             {
-                $pid = $_GET['pid'];
+                $pid = safesql($_GET['pid'], 'int');
                 if ($data->num_rows($data->select_query("album_track",  "WHERE ID = $safe_id")))
                 {    
                     $sql = $data->select_query("photos", "WHERE ID=$pid");

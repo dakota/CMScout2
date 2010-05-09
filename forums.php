@@ -3,7 +3,7 @@
     FILENAME        :   forums.php
     PURPOSE OF FILE :   Manages the forums
     LAST UPDATED    :   18 July 2005
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -157,8 +157,8 @@ switch($action)
     case "delete":
         if ($userauths['delete'] == 1)
         {
-            $pid = $_GET['p'];
-            $tid = $_GET['t'];
+            $pid = safesql($_GET['p'], 'int');
+            $tid = safesql($_GET['t'], 'int');
             if ($_POST['submit'] == "Yes")
             {
                 $sql = $data->select_query("forumposts", "WHERE topic=$tid");
