@@ -112,7 +112,7 @@ document.location = "admin.php?page=users&action=delete&id=" + articleId;
             {/section}
             </select>  
         {elseif $fields[fields].type == 6}
-            <input name="{$fields[fields].name}" id="{$fields[fields].name}" type="text" value="{$uinfo.custom.$name}" class="inputbox format-y-m-d highlight-days-67" onblur="checkElement('{$fields[fields].name}', 'date', {if $fields[fields].required}true{else}false{/if}, 0, 0, '');"/><br /><span class="fieldError" id="{$fields[fields].name}Error">{if $fields[fields].required}Required: {/if}Must be a valid date in the format YYYY-MM-DD</span>         
+            <input name="{$fields[fields].name}" id="{$fields[fields].name}" type="text" value="{$uinfo.custom.$name}" class="inputbox dateformat-Y-ds-m-ds-d" onblur="checkElement('{$fields[fields].name}', 'date', {if $fields[fields].required}true{else}false{/if}, 0, 0, '');"/><br /><span class="fieldError" id="{$fields[fields].name}Error">{if $fields[fields].required}Required: {/if}Must be a valid date in the format YYYY-MM-DD</span>
         {/if}   
         </div></div><br />
     {/section}          

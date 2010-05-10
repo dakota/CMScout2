@@ -163,7 +163,7 @@ function confirmDownloadDelete(articleId)
             {/section}
             </select>  
         {elseif $fields[fields].type == 6}
-            <input name="options[{$members[attendloop].id}][{$fields[fields].name}]" id="{$fields[fields].name}{$members[attendloop].id}" type="text" value="{$members[attendloop].attendoptions.$name}" class="inputbox format-y-m-d highlight-days-67" onblur="checkElement('{$fields[fields].name}{$members[attendloop].id}', 'date', {if $fields[fields].required}true{else}false{/if}, 0, 0, '');"/><br /><span class="fieldError" id="{$fields[fields].name}{$members[attendloop].id}Error">{if $fields[fields].required}Required: {/if}Must be a valid date in the format YYYY-MM-DD</span>         
+            <input name="options[{$members[attendloop].id}][{$fields[fields].name}]" id="{$fields[fields].name}{$members[attendloop].id}" type="text" value="{$members[attendloop].attendoptions.$name}" class="inputbox dateformat-Y-ds-m-ds-d" onblur="checkElement('{$fields[fields].name}{$members[attendloop].id}', 'date', {if $fields[fields].required}true{else}false{/if}, 0, 0, '');"/><br /><span class="fieldError" id="{$fields[fields].name}{$members[attendloop].id}Error">{if $fields[fields].required}Required: {/if}Must be a valid date in the format YYYY-MM-DD</span>
         {/if}   
         </div></div><br />
     {/section}          
@@ -451,15 +451,15 @@ function movedown(number)
     <div class="inputboxwrapper"><input type="text" name="summary" id="summary" size="32" class="inputbox" value="{$events.summary}" onblur="checkElement('summary', 'text', true, 0, 0, '');" /><br /><span class="fieldError" id="summaryError">Required</span></div></div><br />
     
     <div class="fieldItem"><label for="sdate" class="label"><b>Starting Date</b><span class="hintanchor" title="Date that the event starts"><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label>
-    <div class="inputboxwrapper"><input name="sdate" id="sdate" type="text"  size="20" maxlength="20" class="inputbox format-y-m-d highlight-days-67{if $action=="new"} range-low-today{/if} first-week-day-{math equation="x - 1" x=$config.startday}" onblur="checkElement('sdate', 'date', true, 0, 0, '');" /><br /><span class="fieldError" id="sdateError">Required: Date in the format: YYYY-MM-DD</span></div></div><br />
+    <div class="inputboxwrapper"><input name="sdate" id="sdate" type="text"  size="20" maxlength="20" class="inputbox dateformat-Y-ds-m-ds-d{if $action=="new"} range-low-today{/if} first-week-day-{math equation="x - 1" x=$config.startday}" onblur="checkElement('sdate', 'date', true, 0, 0, '');" /><br /><span class="fieldError" id="sdateError">Required: Date in the format: YYYY-MM-DD</span></div></div><br />
      
     <div class="fieldItem"><label for="stime" class="label"><b>Starting Time</b><span class="hintanchor" title="Time that the event starts"><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label>
     <div class="inputboxwrapper">{html_select_time field_array=stime class=inputbox style=width:40px time=$events.startdate display_seconds=false}</div></div><br />
     
     <div class="fieldItem"><label for="edate" class="label"><b>Ending Date</b><span class="hintanchor" title="Date that the event ends"><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label>
-    <div class="inputboxwrapper"><input name="edate" id="edate" type="text"  size="20" maxlength="20" class="inputbox format-y-m-d highlight-days-67 range-low-{$events.startdate|date_format:"%Y-%m-%d"} first-week-day-{math equation="x - 1" x=$config.startday}" onblur="checkElement('edate', 'date', true, 0, 0, '');"/><br /><span class="fieldError" id="edateError">Required: Date in the format: YYYY-MM-DD</span></div></div><br />
+    <div class="inputboxwrapper"><input name="edate" id="edate" type="text"  size="20" maxlength="20" class="inputbox dateformat-Y-ds-m-ds-d range-low-{$events.startdate|date_format:"%Y-%m-%d"} first-week-day-{math equation="x - 1" x=$config.startday}" onblur="checkElement('edate', 'date', true, 0, 0, '');"/><br /><span class="fieldError" id="edateError">Required: Date in the format: YYYY-MM-DD</span></div></div><br />
    
-    <div class="fieldItem"><label for="etime" class="label"><b>Ending Time</b><span class="hintanchor" title="Tome that the event ends"><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label>
+    <div class="fieldItem"><label for="etime" class="label"><b>Ending Time</b><span class="hintanchor" title="Time that the event ends"><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label>
     <div class="inputboxwrapper">{html_select_time field_array=etime class=inputbox style=width:40px time=$events.enddate display_seconds=false}</div></div><br />
    
    <div class="fieldItem"><label for="colour" class="label"><b>Colour</b><span class="hintanchor" title="Background colour for the event."><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label>

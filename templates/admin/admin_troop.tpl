@@ -444,7 +444,7 @@ function memberSelect()
 <div class="inputboxwrapper"><input type="text" id="email" name="email" class="inputbox" value="{$member.email}" onblur="checkElement('email', 'email', false, 0, 0, '');"><br /><span class="fieldError" id="emailError">Must be a valid email address.</span></div></div><br />
 
 <div class="fieldItem"><label for="dob" class="label">Date of Birth<span class="hintanchor" title="Optional"><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label>
-<div class="inputboxwrapper"><input type="text" id="dob" name="dob" class="inputbox format-y-m-d highlight-days-67" value="{$member.dob|date_format:"%Y-%m-%d"}"  onblur="checkElement('dob', 'date', false, 0, 0, '');"><br /><span class="fieldError" id="dobError">Must be a valid date in the format of YYYY-MM-DD.</span></div></div><br />
+<div class="inputboxwrapper"><input type="text" id="dob" name="dob" class="inputbox dateformat-Y-ds-m-ds-d" value="{$member.dob|date_format:"%Y-%m-%d"}"  onblur="checkElement('dob', 'date', false, 0, 0, '');"><br /><span class="fieldError" id="dobError">Must be a valid date in the format of YYYY-MM-DD.</span></div></div><br />
 </fieldset>
 
 <fieldset>
@@ -642,7 +642,7 @@ function toggle(id, fromid)
             {/section}
             </select>  
         {elseif $fields[fields].type == 6}
-            <input name="{$fields[fields].name}" type="text" value="{$member.custom.$name}" class="inputbox format-y-m-d highlight-days-67" />           
+            <input name="{$fields[fields].name}" type="text" value="{$member.custom.$name}" class="inputbox dateformat-Y-ds-m-ds-d" />
         {/if}   
         </div></div><br />
     {/section}         
@@ -701,7 +701,7 @@ function toggle(id, fromid)
             {/section}
             </select>  
         {elseif $scoutfields[scoutfields].type == 6}
-            <input name="{$scoutfields[scoutfields].name}" type="text" value="{$member.custom.$name}" class="inputbox format-y-m-d highlight-days-67" />           
+            <input name="{$scoutfields[scoutfields].name}" type="text" value="{$member.custom.$name}" class="inputbox dateformat-Y-ds-m-ds-d" />
         {/if}   
         </div></div><br />
     {/section}          
