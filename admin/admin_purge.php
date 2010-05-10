@@ -42,7 +42,7 @@ if( !empty($getmodules) )
 }
 else
 {
-    if($_POST['Submit'] == "Submit")
+    if(isset($_POST['Submit']) && $_POST['Submit'] == "Purge users")
     {
         $date = safesql(strtotime($_POST['purge']), "int");
         
@@ -68,6 +68,18 @@ else
         }
         show_admin_message("$i users deleted", "$pagename");
     }
+	elseif(isset($_POST['Submit']) && $_POST['Submit'] == "Show users") {
+		$date = safesql(strtotime($_POST['purge']), "int");
+        
+        $sql = $data->select_query("users", "WHERE lastlogin <= $date");
+		
+		$users = array();
+		while($users[] = $data->fetch_array($sql)){};
+		
+		$tpl->assign('users', $users);
+		$tpl->assign('userCount', $data->num_rows($sql));
+		$tpl->assign('purgeDate', $_POST['purge']);
+	}
  
     $filetouse = "admin_purge.tpl";
 }
