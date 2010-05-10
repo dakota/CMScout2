@@ -415,6 +415,7 @@ CREATE TABLE `!#prefix#!frontpage` (
   `item` int(11) NOT NULL,
   `type` tinyint(4) NOT NULL,
   `pos` int(11) NOT NULL default '0',
+  `option` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
@@ -603,10 +604,18 @@ CREATE TABLE `!#prefix#!newscontent` (
   `news` longtext NOT NULL,
   `event` int(11) NOT NULL default '0',
   `attachment` varchar(20) NOT NULL,
+  `category_id` int(11) NOT NULL default '0',
   `allowed` tinyint(4) NOT NULL default '0',
   `trash` tinyint(4) NOT NULL,
   PRIMARY KEY  (`id`),
   FULLTEXT KEY `title` (`title`,`news`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `!#prefix#!news_categories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

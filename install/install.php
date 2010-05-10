@@ -3,7 +3,7 @@
     FILENAME        :   install.php
     PURPOSE OF FILE :   Installs CMScout
     LAST UPDATED    :   20 November 2007
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -43,7 +43,7 @@ $installed = 0;
 $errors = "";
 $gotoplace = "";
 $stage = isset($_POST['stage']) ? $_POST['stage'] : 0;
-$version = "2.08";
+$version = "2.09";
 
 if($stage == '' || !isset($stage))
 {

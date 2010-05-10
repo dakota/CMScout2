@@ -3,7 +3,7 @@
     FILENAME        :   upgrade.php
     PURPOSE OF FILE :   Upgrades from one version to another (This file: 1.10 to 1.20)
     LAST UPDATED    :   20 November 2007
-    COPYRIGHT       :   © 2007 CMScout Group
+    COPYRIGHT       :   ï¿½ 2007 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -28,8 +28,8 @@
 $bit = "./../";
 $upgrader = true;
 require_once ("../common.php");
-$version  = "2.08";
-$oldversion = "2.07";
+$version  = "2.09";
+$oldversion = "2.08";
 
 $step = isset($_GET['step']) ? $_GET['step'] : 1;
 ?>

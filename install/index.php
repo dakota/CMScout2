@@ -3,7 +3,7 @@
     FILENAME        :   install.php
     PURPOSE OF FILE :   Installs CMScout
     LAST UPDATED    :   25 May 2006
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -27,8 +27,8 @@
 <?php
 require_once("../includes/Smarty.class.php");
 require_once("../includes/functions.php");
-$version = "2.08";
-$oldversion = "2.07";
+$version = "2.09";
+$oldversion = "2.08";
 $tpl = new smarty();
 $tpl->template_dir = "../install/";
 $tpl->compile_dir = '../templates_c/';

@@ -162,7 +162,7 @@ function hideall()
                                 </tr>
                                 </table>
                                 {if $filesok == false}<h1 style="color:red">TESTS FAILED</h1>{/if}
-                                <div align="center"><input type="button" value="Next >" onclick="show_hide('database')" class="button" /></div>
+                                {if $filesok == true}<div align="center"><input type="button" value="Next >" onclick="show_hide('database')" class="button" /></div>{/if}
                             </div>
                             <div id="database" style="display: none;">
                                 <fieldset class="formlist">
@@ -226,7 +226,8 @@ Please fill in the required details.<br /><br />
 <fieldset class="formlist">
 <legend>Website Configuration</legend>
 Please fill in the required details.<br /><br />
-<div class="field"> 
+<div class="field">
+ 
 <div class="fieldItem"><label for="cmscoutaddress" class="label">Website Address<span class="hintanchor" title="Required :: The URL that users will use to access your website."><img src="help.png" alt="[?]"/></span></label>
  <div class="inputboxwrapper"><input type="text" id="cmscoutaddress" name="cmscoutaddress" size="30" {if $config.address == ""}value="http://{$cmscoutaddress}"{else}value="{$config.address}"{/if} class="inputbox" onblur="checkElement('cmscoutaddress', 'text', true, 0, 0, '');" /><br /><span class="error" id="cmscoutaddressError">Required: Please enter a valid URL.</span></div></div><br />
 
@@ -284,7 +285,8 @@ Please fill in the required details.<br /><br />
 <fieldset class="formlist">
 <legend>License Agreement</legend>
 Please read the license agreement carefully before accepting it.<br /><br />
-<div class="field"><div style="width:100%;height:500px;overflow:auto;">
+<div class="field">
+<div style="width:100%;height:500px;overflow:auto;">
 <pre>GNU GENERAL PUBLIC LICENSE
 Version 2, June 1991
 
@@ -625,7 +627,9 @@ POSSIBILITY OF SUCH DAMAGES.</pre>
 		<input name="licenseagreement" type="hidden" value="{$licenseagreement}" />
 		<div align="center"><input name="dldone" type="submit" value="Done" class="button" /></div>
 	</div>
-</div>{elseif $stage == 2}<div style="padding-bottom: 3px;">
+</div>
+{elseif $stage == 2}
+<div style="padding-bottom: 3px;">
 	<div class="inside-box" align="left">
 		<div style="color:#ff0000">Error ::.::.:..</div>
 	</div>
