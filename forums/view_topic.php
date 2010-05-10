@@ -40,7 +40,7 @@ $latest = isset($_GET['late']) ?$_GET['late'] : 0;
 
 if ($tid != 'NULL')
 {
-    if ($_POST['vote'] == "Vote")
+    if (isset($_POST['vote']) && $_POST['vote'] == "Vote")
     {
         $item = $_POST['poll'];
         
@@ -58,7 +58,7 @@ if ($tid != 'NULL')
     }
 
     $limit = $config['numpage'];
-    $start = $_GET['start'] > 0 ? safesql($_GET['start'], "int") : 0;
+    $start = isset($_GET['start']) && $_GET['start'] > 0 ? safesql($_GET['start'], "int") : 0;
        
     $sql = $data->select_query("forumtopics", "WHERE id=$tid");
     $topic = $data->fetch_array($sql);
@@ -78,7 +78,7 @@ if ($tid != 'NULL')
 
     $sql = $data->select_query("forumposts", "WHERE topic=$tid", "id");
     $numposts = $data->num_rows($sql);
-
+	
     //Pagenation working out
     if ($numposts > 0) 
     {
@@ -112,8 +112,8 @@ if ($tid != 'NULL')
     $posts = array();
     while($temp = $data->fetch_array($sql))
     {
-       $attachmentTemp = NULL;
-       $attachment = NULL;
+		$attachmentTemp = NULL;
+		$attachment = NULL;
         $sql2 = $data->select_query("users", "WHERE id='{$temp['userposted']}'", "uname,avyfile, sig, numposts, publicprofile, numtopics");
         $temp2 = $data->fetch_array($sql2);
         $temp['useravy'] = $temp2['avyfile'];
@@ -130,44 +130,50 @@ if ($tid != 'NULL')
             $editinfo = $data->select_fetch_one_row("users", "WHERE id={$temp['edituser']}", "uname");
             $temp['editusername'] = $temp['edituser'] != -1 ? $editinfo['uname'] : "Guest";
         }
-        $attachmentTemp = explode('.', $temp['attachment']);
-        $attachId = safesql($attachmentTemp[0], "int");
-        switch($attachmentTemp[1])
-        {
-            case 'article':
-                $temp2 = $data->select_fetch_one_row("patrol_articles", "WHERE ID=$attachId", "ID, title");
-                $attachment['name'] = $temp2['title'];
-                $attachment['link'] = "index.php?page=patrolarticle&id={$attachId}&menuid={$menuid}&action=view";
-                $attachment['type'] = "Article";
-                break;
-            case 'album':
-                $temp2 = $data->select_fetch_one_row("album_track", "WHERE ID=$attachId", "ID, album_name");
-                $attachment['name'] = $temp2['album_name'];
-                $attachment['link'] = "index.php?page=photos&album={$attachId}&menuid={$menuid}";
-                $attachment['type'] = "Photo Album";
-                break;
-            case 'event':
-                $temp2 = $data->select_fetch_one_row("calendar_items", "WHERE id=$attachId", "id, summary");
-                $attachment['name'] = $temp2['summary'];
-                $attachment['link'] = "index.php?page=calender&item={$attachId}&menuid={$menuid}";
-                $attachment['type'] = "Event";
-                break;
-            case 'download':
-                $temp2 = $data->select_fetch_one_row("downloads", "WHERE id=$attachId", "id, name, cat");
-                $attachment['name'] = $temp2['name'];
-                $attachment['link'] = "index.php?page=downloads&id={$attachId}&action=down&catid={$temp2['cat']}&menuid={$menuid}";
-                $attachment['type'] = "Download";
-                break;
-            case 'news':
-                $temp2 = $data->select_fetch_one_row("newscontent", "WHERE id=$attachId", "id, title");
-                $attachment['name'] = $temp2['title'];
-                $attachment['link'] = "index.php?page=news&id={$attachId}&menuid={$menuid}";
-                $attachment['type'] = "News";
-                break;
-        }
-        $temp['attachment'] = $attachment;
-        $posts[] = $temp;
-    }
+		
+		if($temp['attachment'] != 0) { 
+			$attachmentTemp = explode('.', $temp['attachment']);
+			$attachId = safesql($attachmentTemp[0], "int");
+			switch($attachmentTemp[1])
+			{
+				case 'article':
+					$temp2 = $data->select_fetch_one_row("patrol_articles", "WHERE ID=$attachId", "ID, title");
+					$attachment['name'] = $temp2['title'];
+					$attachment['link'] = "index.php?page=patrolarticle&id={$attachId}&menuid={$menuid}&action=view";
+					$attachment['type'] = "Article";
+					break;
+				case 'album':
+					$temp2 = $data->select_fetch_one_row("album_track", "WHERE ID=$attachId", "ID, album_name");
+					$attachment['name'] = $temp2['album_name'];
+					$attachment['link'] = "index.php?page=photos&album={$attachId}&menuid={$menuid}";
+					$attachment['type'] = "Photo Album";
+					break;
+				case 'event':
+					$temp2 = $data->select_fetch_one_row("calendar_items", "WHERE id=$attachId", "id, summary");
+					$attachment['name'] = $temp2['summary'];
+					$attachment['link'] = "index.php?page=calender&item={$attachId}&menuid={$menuid}";
+					$attachment['type'] = "Event";
+					break;
+				case 'download':
+					$temp2 = $data->select_fetch_one_row("downloads", "WHERE id=$attachId", "id, name, cat");
+					$attachment['name'] = $temp2['name'];
+					$attachment['link'] = "index.php?page=downloads&id={$attachId}&action=down&catid={$temp2['cat']}&menuid={$menuid}";
+					$attachment['type'] = "Download";
+					break;
+				case 'news':
+					$temp2 = $data->select_fetch_one_row("newscontent", "WHERE id=$attachId", "id, title");
+					$attachment['name'] = $temp2['title'];
+					$attachment['link'] = "index.php?page=news&id={$attachId}&menuid={$menuid}";
+					$attachment['type'] = "News";
+					break;
+			}
+			$temp['attachment'] = $attachment;
+		}
+		else {
+			unset($temp['attachment']);
+		}
+		$posts[] = $temp;
+	}
 
     $data->delete_query("forumnew", "uid='{$check['id']}' AND topic=$tid", "", "", false);
 
@@ -227,7 +233,7 @@ if ($tid != 'NULL')
     $tpl->assign('num_per_page', $limit);
     if (isset($next_start)) $tpl->assign('next_start', $next_start);
     if (isset($prev_start)) $tpl->assign('prev_start', $prev_start);
-    $tpl->assign("start", $_GET['start']);
+    $tpl->assign("start", isset($_GET['start']) ? $_GET['start'] : 0);
     $tpl->assign("posts", $posts);
     $tpl->assign("topic", $topic);
     $tpl->assign("numposts", $numposts);

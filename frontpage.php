@@ -27,7 +27,7 @@
 <?php
 if (!defined('SCOUT_NUKE'))
     die("You have accessed this page illegally, please go use the main menu");
-$level = $check['level'];
+$level = isset($check['level']) ? $check['level'] : 0;
 
 $frontsql = $data->select_query("frontpage", "ORDER BY pos ASC");
 

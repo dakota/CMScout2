@@ -28,16 +28,16 @@
 /********************************************Start Content Generation*****************************************/
     
     $page = (isset($_GET['page']) && $_GET['page'] != '') ? $_GET['page'] : "frontpage";
-    $type = $_GET['type'] == "static" ? 1 : 0;
+    $type = isset($_GET['type']) && $_GET['type'] == "static" ? 1 : 0;
     $validdynamic = false;
-    $safe_page = safesql($_GET['page'], "text");
+    $safe_page = isset($_GET['page']) ? safesql($_GET['page'], "text") : '';
     $exempt = array("rss"	=> true,
                 "patrolpages"	=> true,
                 "subsite"       	=> true,
                 "logon"         	=> true,
                 "register"      	=> true,
 		"forgot"	    	=> true);
-    if ($exempt[$page] == true || $data->num_rows($data->select_query("functions", "WHERE active = 1 AND code = $safe_page")))
+    if ((isset($exempt[$page]) && $exempt[$page] == true) || $data->num_rows($data->select_query("functions", "WHERE active = 1 AND code = $safe_page")))
     {
         $validdynamic = true;
     }
@@ -73,19 +73,19 @@
             {
                 include($page . $phpex);
             } 
-	    elseif(!$validdynamic && $page != "frontpage")
-	    {
-		show_message("The module you are trying to access is either not a valid module, or it has been disabled");
-	    }
+			elseif(!$validdynamic && $page != "frontpage")
+			{
+			show_message("The module you are trying to access is either not a valid module, or it has been disabled");
+			}
             else
             {
                 include('frontpage' . $phpex);	
             } 
-		$tpl->assign ("cpallowed",  get_auth("usercp", 0) == 1 && $data->num_rows($data->select_query("functions", "WHERE active = 1 AND code = 'usercp'")));
-		$tpl->assign ("profileallowed", get_auth("profile", 0) == 1 && $data->num_rows($data->select_query("functions", "WHERE active = 1 AND code = 'profile'")));
-		$tpl->assign ("contributionallowed", get_auth("mythings", 0) == 1 && $data->num_rows($data->select_query("functions", "WHERE active = 1 AND code = 'mythings'")));
-		$tpl->assign ("groupsallowed", get_auth("mypatrol", 0) == 1 && $data->num_rows($data->select_query("functions", "WHERE active = 1 AND code = 'mypatrol'")));
-		$tpl->assign ("pmallowed", get_auth("pmmain", 0) == 1 && $data->num_rows($data->select_query("functions", "WHERE active = 1 AND code = 'pmmain'")));
+			$tpl->assign ("cpallowed",  get_auth("usercp", 0) == 1 && $data->num_rows($data->select_query("functions", "WHERE active = 1 AND code = 'usercp'")));
+			$tpl->assign ("profileallowed", get_auth("profile", 0) == 1 && $data->num_rows($data->select_query("functions", "WHERE active = 1 AND code = 'profile'")));
+			$tpl->assign ("contributionallowed", get_auth("mythings", 0) == 1 && $data->num_rows($data->select_query("functions", "WHERE active = 1 AND code = 'mythings'")));
+			$tpl->assign ("groupsallowed", get_auth("mypatrol", 0) == 1 && $data->num_rows($data->select_query("functions", "WHERE active = 1 AND code = 'mypatrol'")));
+			$tpl->assign ("pmallowed", get_auth("pmmain", 0) == 1 && $data->num_rows($data->select_query("functions", "WHERE active = 1 AND code = 'pmmain'")));
         }
        
            
@@ -99,12 +99,12 @@
             $dataC = true;
             $filetouse = get_temp($pagename, $pagenum);
         } 
-        elseif ($pagename == "frontpage")
+        elseif (isset($pagename) && $pagename == "frontpage")
         {
             $dataC = true;
             $filetouse = $content;
         }
-        elseif ($dbpage == false && $message != "" && $othermessage == false)
+        elseif (isset($message) && $dbpage == false && $message != "" && $othermessage == false)
         {
             $filetouse = $message;
             $dataC = true;

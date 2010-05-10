@@ -28,7 +28,7 @@
 define("SCOUT_NUKE", 1);
 if (!$upgrader)
 {
-    $bit = $bit == '../' ? $bit : '';
+    $bit = isset($bit) && $bit == '../' ? $bit : '';
     if (file_exists("{$bit}install/index.php") && (!file_exists("{$bit}config.php") || filesize("{$bit}config.php") == 0))
     {
         header("Location: install/index.php");
@@ -47,7 +47,7 @@ if (!$upgrader)
     }
     elseif (!file_exists("{$bit}install/index.php") && file_exists("{$bit}config.php") && filesize("{$bit}config.php") > 0)
     {
-        if (!$limitedStartup)
+        if (!isset($limitedStartup) || $limitedStartup !== true)
         {
             require_once ("{$bit}includes/Smarty.class.php");
         }
@@ -62,7 +62,7 @@ if (!$upgrader)
         trigger_error("The configuration file is missing. Normally CMScout would try to install itself then, but it appears that the install file is also missing. Please fix this by either placing the correct configuration file or the install file where it is ment to be.", E_USER_ERROR);
     }
     /********************************************Start Smarty config***************************************************/
-    if (!$limitedStartup)
+    if (!isset($limitedStartup) || $limitedStartup !== true)
     {
         if (class_exists('Smarty', false))
         {
@@ -145,7 +145,7 @@ if (!$upgrader)
             }
         }
 	
-    if (!$limitedStartup)
+    if (!isset($limitedStartup) || $limitedStartup !== true)
     {
         if ($config['softdebug'] == 1)
         {
@@ -161,7 +161,7 @@ if (!$upgrader)
             $tpl->load_filter('output','gzip');
         }
         
-        if(!$skipUser)
+        if(!isset($skipUser) || $skipUser !== true)
         {
             $check = $Auth->page_check();
             $user_page_auths = get_user_auths();

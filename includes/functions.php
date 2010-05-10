@@ -939,6 +939,11 @@ function get_user_auths()
     $userAuth['static'] = unserialize($userAuth['static']);
     $userAuth['subsites'] = unserialize($userAuth['subsites']);
     
+	$dynamic = array();
+	$permission = array();
+	$static = array();
+	$subsites = array();
+		
     if ($check['id'] != -1)
     {
         $groups = group_sql_list_id("authname", "OR", true);
@@ -952,11 +957,6 @@ function get_user_auths()
             $groupAuth[$i]['static'] = unserialize($groupAuth[$i]['static']);
             $groupAuth[$i]['subsites'] = unserialize($groupAuth[$i]['subsites']);
         }
-
-        $dynamic = array();
-        $permission = array();
-        $static = array();
-        $subsites = array();
         
         for ($i=0;$i<$groupAuthNumber;$i++)
         {
@@ -1091,11 +1091,11 @@ function get_auth($page, $type)
                     "help"          => true,
                     "frontpage"     => true);
                     
-    if ($guestpages[$page] == true && $check['uname'] == "Guest") 
+    if (isset($guestpages[$page]) && $guestpages[$page] == true && $check['uname'] == "Guest") 
     {
         $userauth = 1;
     }
-    elseif ($exempt[$page] == true && $check['uname'] != "Guest")
+    elseif (isset($exempt[$page]) && $exempt[$page] == true && $check['uname'] != "Guest")
     {
         $userauth = 1;
     }
@@ -1114,19 +1114,19 @@ function get_auth($page, $type)
             case 0:
                 $safe_page = safesql($page, "text");
                 $pages = $data->select_fetch_one_row("functions", "WHERE code=$safe_page", "id");
-                if ($user_page_auths['dynamic'][$pages['id']] === 1)
+                if (isset($user_page_auths['dynamic'][$pages['id']]) && $user_page_auths['dynamic'][$pages['id']] === 1)
                 {
                     $userauth = 1;
                 }
-                elseif ($user_page_auths['permission'][$pages['id']] === 1)
+                elseif (isset($user_page_auths['permission'][$pages['id']]) && $user_page_auths['permission'][$pages['id']] === 1)
                 {
                     $userauth = 1;
                 }
-                elseif ($user_page_auths['dynamic'][$pages['id']] === 0)
+                elseif (isset($user_page_auths['dynamic'][$pages['id']]) && $user_page_auths['dynamic'][$pages['id']] === 0)
                 {
                     $userauth = 0;
                 }
-                elseif ($user_page_auths['permission'][$pages['id']] === 0)
+                elseif (isset($user_page_auths['permission'][$pages['id']]) && $user_page_auths['permission'][$pages['id']] === 0)
                 {
                     $userauth = 0;
                 }
@@ -2425,48 +2425,51 @@ function adminauth($moduleid, $typeauth)
 {
     global $data, $check;
     
-        $sql = $data->select_query("usergroups", "WHERE userid = {$check['id']}");
+    $sql = $data->select_query("usergroups", "WHERE userid = {$check['id']}");
         
 	$userauth = array();
-        while ($temp = $data->fetch_array($sql))
-        {
-            $sql2 = $data->select_query("groups", "WHERE id = {$temp['groupid']}");
-            $groupinfo = $data->fetch_array($sql2);
-            
-            if ($temp['utype'] == 0)
-            {
-                $tempauth = unserialize($groupinfo['normaladmin']);
-            }
-            elseif ($temp['utype'] == 1)
-            {
-                $tempauth = unserialize($groupinfo['agladmin']);
-            }
-            elseif ($temp['utype'] == 2)
-            {
-                $tempauth = unserialize($groupinfo['gladmin']);
-            }
+	while ($temp = $data->fetch_array($sql))
+	{
+		$sql2 = $data->select_query("groups", "WHERE id = {$temp['groupid']}");
+		$groupinfo = $data->fetch_array($sql2);
+		
+		if ($temp['utype'] == 0)
+		{
+			$tempauth = unserialize($groupinfo['normaladmin']);
+		}
+		elseif ($temp['utype'] == 1)
+		{
+			$tempauth = unserialize($groupinfo['agladmin']);
+		}
+		elseif ($temp['utype'] == 2)
+		{
+			$tempauth = unserialize($groupinfo['gladmin']);
+		}
 
-    
-	    foreach($tempauth['access'] as $key => $notused)
-	    {
-		$userauth['access'][$key] = $userauth['access'][$key] || $tempauth['access'][$key];
-		$userauth['add'][$key] = $userauth['add'][$key] || $tempauth['add'][$key];
-		$userauth['edit'][$key] = $userauth['edit'][$key] || $tempauth['edit'][$key];
-		$userauth['delete'][$key] = $userauth['delete'][$key] || $tempauth['delete'][$key];
-		$userauth['publish'][$key] = $userauth['publish'][$key] || $tempauth['publish'][$key];
-		$userauth['limit'][$key] = $userauth['limit'][$key] || $tempauth['limit'][$key];
-	    }
-        }
+		foreach($tempauth['access'] as $key => $notused)
+		{
+			$userauth['access'][$key] = $userauth['access'][$key] || $tempauth['access'][$key];
+			$userauth['add'][$key] = $userauth['add'][$key] || $tempauth['add'][$key];
+			$userauth['edit'][$key] = $userauth['edit'][$key] || $tempauth['edit'][$key];
+			$userauth['delete'][$key] = $userauth['delete'][$key] || $tempauth['delete'][$key];
+			$userauth['publish'][$key] = $userauth['publish'][$key] || $tempauth['publish'][$key];
+			$userauth['limit'][$key] = $userauth['limit'][$key] || $tempauth['limit'][$key];
+		}
+	}
 	
-    switch($typeauth)
-    {
-        case "access":  return $userauth['access'][$moduleid];
-        case "add":  return $userauth['access'][$moduleid] && $userauth['add'][$moduleid];
-        case "edit":  return $userauth['access'][$moduleid] && $userauth['edit'][$moduleid];
-        case "delete":  return $userauth['access'][$moduleid] && $userauth['delete'][$moduleid];
-        case "publish":  return $userauth['access'][$moduleid] && $userauth['publish'][$moduleid];
-        case "limit":  return$userauth['access'][$moduleid] &&  $userauth['limit'][$moduleid];
-    }
+	if(!empty($userauth)) {
+		switch($typeauth)
+		{
+			case "access":  return $userauth['access'][$moduleid];
+			case "add":  return $userauth['access'][$moduleid] && $userauth['add'][$moduleid];
+			case "edit":  return $userauth['access'][$moduleid] && $userauth['edit'][$moduleid];
+			case "delete":  return $userauth['access'][$moduleid] && $userauth['delete'][$moduleid];
+			case "publish":  return $userauth['access'][$moduleid] && $userauth['publish'][$moduleid];
+			case "limit":  return$userauth['access'][$moduleid] &&  $userauth['limit'][$moduleid];
+		}
+	}
+	
+	return false;
 }
 
 

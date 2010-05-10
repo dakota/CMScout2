@@ -30,6 +30,7 @@ if (!defined('SCOUT_NUKE'))
 
 if (isset($_GET['action'])) $action = $_GET['action'];
 $pagenum = 1;
+$userauths = array();
 
 $editFormAction = $_SERVER['PHP_SELF'];
 if (isset($_SERVER['QUERY_STRING']))
@@ -37,8 +38,8 @@ if (isset($_SERVER['QUERY_STRING']))
   $editFormAction .= "?" . htmlentities($_SERVER['QUERY_STRING']);
 }
 
-$f = safesql($_GET['f'], "int");
-$t = safesql($_GET['t'], "int");
+$f = isset($_GET['f']) && safesql($_GET['f'], "int");
+$t = isset($_GET['t']) && safesql($_GET['t'], "int");
 if (!empty($_GET['t']))
 {
     $sql = $data->select_query("forumtopics", "WHERE id = $t");
@@ -53,25 +54,29 @@ if (!empty($_GET['f']) || !empty($temp['forum']))
 
 if(!empty($_GET['f']) || !empty($_GET['t']))
 {    
-    $new_topic = unserialize($auth['new_topic']);
-    $reply_topic = unserialize($auth['reply_topic']);
-    $edit_post = unserialize($auth['edit_post']);
-    $delete_post = unserialize($auth['delete_post']);
-    $view_forum = unserialize($auth['view_forum']);
-    $read_topics = unserialize($auth['read_topics']);
-    $sticky = unserialize($auth['sticky']);
-    $announce = unserialize($auth['announce']);
-    $poll = unserialize($auth['poll']);
+	$forumAuths = array(
+		'new' => unserialize($auth['new_topic']),
+		'reply' => unserialize($auth['reply_topic']),
+		'edit' => unserialize($auth['edit_post']),
+		'delete' => unserialize($auth['delete_post']),
+		'view' => unserialize($auth['view_forum']),
+		'read' => unserialize($auth['read_topics']),
+		'sticky' => unserialize($auth['sticky']),
+		'announce' => unserialize($auth['announce']),
+		'poll' => unserialize($auth['poll']),
+	);
 
-    $userauths['new'] = 0;
-    $userauths['reply'] = 0;
-    $userauths['edit'] = 0;
-    $userauths['delete'] = 0;
-    $userauths['view'] = 0;
-    $userauths['read'] = 0;
-    $userauths['sticky'] = 0;
-    $userauths['announce'] = 0;
-    $userauths['poll'] = 0;
+	$userauths = array(
+		'new' => 0,
+		'reply' => 0,
+		'edit' => 0,
+		'delete' => 0,
+		'view' => 0,
+		'read' => 0,
+		'sticky' => 0,
+		'announce' => 0,
+		'poll' => 0,
+	);
 
     if ($check['id'] != "-1")
     {
@@ -84,21 +89,16 @@ if(!empty($_GET['f']) || !empty($_GET['t']))
     
     $userauths['mod'] = $data->num_rows($data->select_query("forummods", "WHERE fid=$f AND mid={$check['id']} AND type=0")) ? 1 : 0;
 
-    for($i=0;$i<count($usergroups);$i++)
+    foreach($usergroups as $userGroup)
     {
-        $userauths['new'] = $userauths['new'] || $new_topic[$usergroups[$i]];
-        $userauths['reply'] = $userauths['reply'] || $reply_topic[$usergroups[$i]];
-        $userauths['edit'] = $userauths['edit'] || $edit_post[$usergroups[$i]];
-        $userauths['delete'] = $userauths['delete'] || $delete_post[$usergroups[$i]];
-        $userauths['view'] = $userauths['view'] || $view_forum[$usergroups[$i]];
-        $userauths['read'] = $userauths['read'] || $read_topics[$usergroups[$i]];
-        $userauths['sticky'] = $userauths['sticky'] || $sticky[$usergroups[$i]];
-        $userauths['announce'] = $userauths['announce'] || $announce[$usergroups[$i]];
-        $userauths['poll'] = $userauths['poll'] || $poll[$usergroups[$i]];
+		foreach($userauths as $key => $auth) {
+			$forumAuth = isset($forumAuths[$key][$userGroup]) ? $forumAuths[$key][$userGroup] : 0;
+			$userauths[$key] = $auth || $forumAuth;
+		}
         
         if ($check['id'] != "-1")
         {
-            $tempsql = $data->select_query("groups", "WHERE id = '{$usergroups[$i]}'", "id");
+            $tempsql = $data->select_query("groups", "WHERE id = '{$userGroup}'", "id");
             $tempsql = $data->fetch_array($tempsql);
             $gid = $tempsql['id'];
             $temp = $data->num_rows($data->select_query("forummods", "WHERE fid=$f AND mid=$gid AND type=1")) ? 1 : 0;

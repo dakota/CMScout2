@@ -272,9 +272,9 @@
     {
 		global $tree, $check, $config, $debug;
 		
-		if ($this->queryresult != 0) 
+		if ($this->queryresult != null) 
         {
-			$this->queryresult = 0;
+			$this->queryresult = null;
 		}
 		$sql = "UPDATE {$this->dbprefix}$tablename SET $set";
 		if ($where) 
@@ -329,8 +329,12 @@
 		}
 	}//fetchassoc
 	
-	function num_rows($query=false) 
+	function num_rows($query=null) 
     {
+		if($query === false) {
+			$query = null;
+		}
+		
 		if ($query) {
 			$number = mysql_num_rows($query);
 			if (isset($number)) 
@@ -342,7 +346,7 @@
     			error_message("Database Error, please try again or contact the administrator", "Database error with number of rows. Error was: " . mysql_error());
 				return false;
 			}
-		} else {
+		} elseif ($this->queryresult) {
 			$number =  mysql_num_rows($this->queryresult);
 			if (isset($number)) 
             {
@@ -354,6 +358,8 @@
 				return false;
 			}
 		}
+		
+		return 0;
 	}//numrows
 	
 	function free_result($query=false) 

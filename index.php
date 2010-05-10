@@ -177,7 +177,7 @@ if (!$config['disablesite'])
         $tpl->assign("rssid", md5($check['uname']));
     }
 	/********************************************End Initilization of page*****************************************/
-    if ($_GET['page'] == "register" && $check['id'] != -1) $_GET['page'] = '';
+    if (isset($_GET['page']) && $_GET['page'] == "register" && $check['id'] != -1) $_GET['page'] = '';
 	require ("getcontent.php");
 } 
 else 
@@ -248,11 +248,11 @@ if ($messages)
     }
 }
 
-if ($_GET['ae'] == 2)
+if (isset($_GET['ae']) && $_GET['ae'] == 2)
 {
     $tpl->assign("infomessage", "Your account has been activated. You can now login. (Click on the message to hide)");
 }
-elseif ($_GET['ae'] == 1)
+elseif (isset($_GET['ae']) && $_GET['ae'] == 1)
 {
     $tpl->assign("infomessage", "The account you are trying to activate does not exist, or your activation code is incorrect. (Click on the message to hide)");
 }

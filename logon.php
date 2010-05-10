@@ -29,7 +29,7 @@
 $limitedStartup = true;
 require_once ("includes/error_handling.php");
 require_once ("common.php");
-if($_POST['Login'] == "Login")
+if(isset($_POST['Login']) && $_POST['Login'] == "Login")
 {
     $query = $_SERVER['QUERY_STRING'];
     $redirectpage = str_replace("redirect=", "", $query);
@@ -100,7 +100,7 @@ else
       $action .= "?" . htmlentities($_SERVER['QUERY_STRING']);
     }  
     $location = "Login";
-    if ($_POST['relogon'] == "Login")
+    if (isset($_POST['relogon']) && $_POST['relogon'] == "Login")
     {
     	$query = $_SERVER['QUERY_STRING'];
         $redirectpage = str_replace("page=logon&redirect=", "", $query);
