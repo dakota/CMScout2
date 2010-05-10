@@ -226,6 +226,15 @@ function get_theme_css()
 	return $tpl->template_dir . $theme['cssfile'];
 } //get_theme_css
 
+function get_spec_by_name($page) 
+{
+    global $data;
+    $page = safesql($page, "text");
+    $pages = $data->select_query("static_content", "WHERE name=$page AND type=0");
+    $page =  $data->fetch_array($pages);
+    return $page['content'];
+} //get_spec_by_name
+
 function get_spec($page, &$location) 
 {
     global $data;

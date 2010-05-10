@@ -169,14 +169,17 @@ function add()
 <label for="name" class="label">Name<span class="hintanchor" title="Name of the name."><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label>
 <div class="inputboxwrapper"><input id="name" name="name" type="text" size="50" maxlength="255" class="inputbox" value="{$albuminfo.album_name}" onblur="checkElement('name', 'text', true, 0, 0, '');" /><br /><span class="fieldError" id="nameError">Required</span></div><br />
 
-<label for="group" class="label">Group<span class="hintanchor" title="Which group site should this album be shown?"><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label>
-<div class="inputboxwrapper"><select name="group" id="group" class="inputbox">
+	<label for="group" class="label">Group<span class="hintanchor" title="Which group site should this album be shown?"><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label>
+	<div class="inputboxwrapper"><select name="group" id="group" class="inputbox">
                <option value="0"  {if 0 == $albuminfo.patrol}selected="selected"{/if}>None</option>
                 {section name=team loop=$numteams}
                     <option value="{$teams[team].id}" {if $teams[team].id == $albuminfo.patrol}selected="selected"{/if}>{$teams[team].teamname}</option>
                 {/section}
                <option value="-1" {if -1 == $albuminfo.patrol}selected="selected"{/if}>Hidden</option>
      </select></div><br />
+	<label for="name" class="label">Exclude from random photos<span class="hintanchor" title="Exclude photos in this album from random photo blocks."><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label>
+	<div class="inputboxwrapper"><input id="no_random" name="no_random" type="checkbox" class="inputbox" value="1" {if $albuminfo.no_random}checked="checked"{/if} /></div><br />
+	 
 <div class="submitWrapper">
  <input type="submit" name="Submit" value="Update" class="button" />
  <input type="reset" name="Submit2" value="Cancel" onclick="document.getElementById('albumedit').style.display='none';" class="button" />
@@ -255,17 +258,20 @@ function add()
 <fieldset class="formlist">
 <legend>New photo album</legend>
 <div class="field">
-<label for="editcaption" class="label">Name<span class="hintanchor" title="Name of the album."><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label>
-<div class="inputboxwrapper"><input type="text" id="album_name" name="album_name" class="inputbox" onblur="checkElement('album_name', 'text', true, 0, 0, '');"/><br /><span class="fieldError" id="album_nameError">Required</span></div><br />
+	<label for="editcaption" class="label">Name<span class="hintanchor" title="Name of the album."><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label>
+	<div class="inputboxwrapper"><input type="text" id="album_name" name="album_name" class="inputbox" onblur="checkElement('album_name', 'text', true, 0, 0, '');"/><br /><span class="fieldError" id="album_nameError">Required</span></div><br />
 
-<label for="editcaption" class="label">Group<span class="hintanchor" title="Which group does this album belong to."><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label>
-<div class="inputboxwrapper"><select name="patrol" class="inputbox">
-               <option value="0" selected >None</option>
-                {section name=team loop=$numteams}
-                    <option value="{$teams[team].id}">{$teams[team].teamname}</option>
-                {/section}
-               <option value="-1">Hidden</option>
+	<label for="editcaption" class="label">Group<span class="hintanchor" title="Which group does this album belong to."><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label>
+	<div class="inputboxwrapper"><select name="patrol" class="inputbox">
+	   <option value="0" selected >None</option>
+		{section name=team loop=$numteams}
+			<option value="{$teams[team].id}">{$teams[team].teamname}</option>
+		{/section}
+	   <option value="-1">Hidden</option>
      </select></div><br />
+	 
+	<label for="name" class="label">Exclude from random photos<span class="hintanchor" title="Exclude photos in this album from random photo blocks."><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label>
+	<div class="inputboxwrapper"><input id="no_random" name="no_random" type="checkbox" class="inputbox" value="1" {if $albuminfo.no_random}checked="checked"{/if} /></div><br />
 </div>
 <div class="submitWrapper">
 <input type="submit" name="submit" value="Add Album" class="button" />	

@@ -25,22 +25,48 @@
 **************************************************************************/
 ?>
 <?php
-//error_reporting(0);
+error_reporting(0);
 $upgrader = false;
 $bit = "./";
 $limitedStartup = true;
 include("common.php");
 require_once ("{$bit}includes/error_handling.php");
-$id = safesql($_GET['pic'], 'int');
+if (isset($_GET['pic']))
+{
+ $id = safesql($_GET['pic'], 'int');
+}
+else
+{
+ $id = '';
+}
 $maxsizex = isset($_GET['maxsizex']) ? $_GET['maxsizex'] : 0;
+$maxsizex = isset($_GET['width']) ? $_GET['width'] : $maxsizex;
+
 $maxsizey = isset($_GET['maxsizey']) ? $_GET['maxsizey'] : 0;
+$maxsizey = isset($_GET['height']) ? $_GET['height'] : $maxsizey;
+
 if (isset($_GET['where'])) $where = $_GET['where']; else $where = "";
 
 $uploaddir=$config['photopath']."/";
 
 if($where == "")
 {
-    $sql = $data->select_query("photos", "WHERE ID=$id AND allowed = 1");
+    if ($id != '')
+    {
+        $sql = $data->select_query("photos", "WHERE ID=$id AND allowed = 1");
+    }
+    else
+    {
+        $sql = $data->select_query("photos", 
+			"WHERE photos.allowed = 1 AND album_track.no_random = 0 AND album_track.allowed = 1 order by rand() limit 1",
+			"*",
+			array(
+				'left' => array(
+					'album_track' => 'photos.album_id = album_track.id'
+				)
+			));
+    }
+
     $pics = $data->fetch_array($sql);
     
     $image = imagecreatefromjpeg($uploaddir.$pics['filename']);

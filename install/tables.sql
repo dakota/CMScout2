@@ -22,6 +22,7 @@ CREATE TABLE `!#prefix#!album_track` (
   `patrol` int(11) default NULL,
   `allowed` tinyint(4) NOT NULL default '0',
   `trash` tinyint(4) NOT NULL,
+  `no_random` TINYINT( 1 ) NOT NULL DEFAULT '1',
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 

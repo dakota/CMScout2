@@ -7,6 +7,7 @@
 
 #@#ALTER TABLE `!#prefix#!newscontent` ADD `category_id` INT NOT NULL AFTER `attachment`
 #@#ALTER TABLE `!#prefix#!frontpage` ADD `option` INT NOT NULL
+#@#ALTER TABLE `!#prefix#!album_track` ADD `no_random` TINYINT( 1 ) NOT NULL DEFAULT '1'
 
 #@#REPLACE INTO `!#prefix#!functions` (`id`, `name`, `code`, `type`, `filetouse`, `active`, `mainmodule`, `options`) VALUES
 (45, 'News', 'news', 2, '', 1, '', 'news_categories,id,name,All Categories,News Category to show,&amp;category=!#id#!'),

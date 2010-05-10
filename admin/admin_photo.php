@@ -138,7 +138,8 @@ else
             {
                 $group = safesql($_POST['group'], "int");
                 $name = safesql($_POST['name'], "text");
-                $data->update_query("album_track", "album_name=$name, patrol=$group", "ID = $id");
+				$noRandom = isset($_POST['no_random']) ? safesql($_POST['no_random'], "int") : 0;
+                $data->update_query("album_track", "album_name=$name, patrol=$group, no_random=$noRandom", "ID = $id");
                 show_admin_message("Album updated", "$pagename&action=view&id=$id"); 
             }
             elseif($_POST['Submit'] == "Upload Photos")
@@ -219,7 +220,8 @@ else
             {
                 $group = safesql($_POST['patrol'], "int");
                 $name = safesql($_POST['album_name'], "text");
-                $data->insert_query("album_track", "'', $name, $group, 1, 0");
+				$noRandom = isset($_POST['no_random']) ? safesql($_POST['no_random'], "int") : 0;
+                $data->insert_query("album_track", "'', $name, $group, 1, 0, $noRandom");
                 show_admin_message("Album added", "$pagename"); 
             }
         }
