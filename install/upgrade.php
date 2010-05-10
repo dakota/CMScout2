@@ -82,8 +82,6 @@ This is to ensure that all necessary updates are performed.
                 Now upgrading Database.<br />
                 Please wait.... <br />               
         <?php
-                $numsql = count($sql);
-
 		$requiredfile =  fopen("upgrade.sql", "r");
 		$required = fread($requiredfile, filesize("upgrade.sql"));
 		$tags = array("!#prefix#!", "!#version#!");
