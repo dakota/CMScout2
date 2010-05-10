@@ -158,11 +158,11 @@ if (!$config['disablesite'])
                                             }
                                             break;
                                         case 3:
-                                            if (isset($functionList[$subitems['item']]['code']))
+                                            if (!empty($functionList[$subitems['item']]['code']))
                                             {
                                                 $menus = false;
                                                 $sub =true;
-												if($data->num_rows($data->select_query("functions", "WHERE active = 1 AND code = '{$functionList[$items['item']]['mainmodule']}'")) > 0)
+												if(!empty($functionList[$items['item']]['mainmodule']) && $data->num_rows($data->select_query("functions", "WHERE active = 1 AND code = '{$functionList[$items['item']]['mainmodule']}'")) > 0)
 												{
 													if ($functionList[$subitems['item']]['filetouse'] != "" && file_exists("sidebox/{$functionList[$subitems['item']]['filetouse']}".$phpex))
 													{
@@ -270,10 +270,10 @@ if (!$config['disablesite'])
                                     }
                                     break;
                                 case 3:
-                                    if (isset($functionList[$items['item']]['code']))
+                                    if (!empty($functionList[$items['item']]['code']))
                                     {
                                         $menus = false;
-										if($data->num_rows($data->select_query("functions", "WHERE active = 1 AND code = '{$functionList[$items['item']]['mainmodule']}'")) > 0)
+										if(!empty($functionList[$items['item']]['mainmodule']) && $data->num_rows($data->select_query("functions", "WHERE active = 1 AND code = '{$functionList[$items['item']]['mainmodule']}'")) > 0)
 										{
 											if ($functionList[$items['item']]['filetouse'] != "" && file_exists("sidebox/{$functionList[$items['item']]['filetouse']}".$phpex))
 											{

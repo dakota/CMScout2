@@ -37,7 +37,7 @@
                 "logon"         	=> true,
                 "register"      	=> true,
 		"forgot"	    	=> true);
-    if ((isset($exempt[$page]) && $exempt[$page] == true) || $data->num_rows($data->select_query("functions", "WHERE active = 1 AND code = $safe_page")))
+    if ((isset($exempt[$page]) && $exempt[$page] == true) || (!empty($safe_page) && $data->num_rows($data->select_query("functions", "WHERE active = 1 AND code = $safe_page"))))
     {
         $validdynamic = true;
     }
