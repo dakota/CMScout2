@@ -27,8 +27,8 @@
 <?php
 require_once("../includes/Smarty.class.php");
 require_once("../includes/functions.php");
-$version = "2.08";
-$oldversion = "2.07";
+$version = "2.09";
+$oldversion = "2.08";
 $tpl = new smarty();
 $tpl->template_dir = "../install/";
 $tpl->compile_dir = '../templates_c/';

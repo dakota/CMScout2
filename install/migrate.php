@@ -43,7 +43,7 @@ $installed = 0;
 $errors = "";
 $gotoplace = "";
 $stage = isset($_POST['stage']) ? $_POST['stage'] : 0;
-$version = "2.08";
+$version = "2.09";
 $upgradefrom = "1.23";
 
 if($stage == '' || !isset($stage))
