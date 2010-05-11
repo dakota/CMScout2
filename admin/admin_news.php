@@ -58,8 +58,9 @@ else
         $news = safesql($_POST['editor'], "text", false);
         $title = safesql($_POST['title'], "text");
         $attachment = safesql($_POST['attachment'], "text");
+        $date_end = safesql(strtotime($_POST['date_end']), "int");
         $category_id = safesql($_POST['category_id'], "int");
-        $Add = $data->insert_query("newscontent", "NULL, $title, $news, $timestamp, $attachment, $category_id, 1, 0");
+        $Add = $data->insert_query("newscontent", "NULL, $title, $news, $timestamp, $date_end, $attachment, $category_id, 1, 0");
         if ($Add)
         {
             show_admin_message("News added", "$pagename");
@@ -72,8 +73,8 @@ else
         $title = safesql($_POST['title'], "text");
         $attachment = safesql($_POST['attachment'], "text");
 		$category_id = safesql($_POST['category_id'], "int");
-		
-        $Update = $data->update_query("newscontent", "title=$title, news=$news, attachment=$attachment, category_id=$category_id", "id='$id'", 'News Admin', "Updated news item $id");
+		$date_end = safesql(strtotime($_POST['date_end']), "int");
+        $Update = $data->update_query("newscontent", "title=$title, news=$news, attachment=$attachment, date_end = $date_end, category_id=$category_id", "id='$id'", 'News Admin', "Updated news item $id");
         if ($Update)
         {
             show_admin_message("News updated", "$pagename");
@@ -197,7 +198,7 @@ else
     else
     {
         // Show all news
-        $result = $data->select_query("newscontent", "WHERE trash=0 ORDER BY title DESC", 'newscontent.*, news_categories.name as category_name', array(
+        $result = $data->select_query("newscontent", "WHERE trash=0 ORDER BY event DESC", 'newscontent.*, news_categories.name as category_name', array(
 			'left' => array(
 				'news_categories' => 'news_categories.id = newscontent.category_id'
 			)
@@ -206,7 +207,7 @@ else
         $news = array();
         $numnews = $data->num_rows($result);
         while ($news[] = $data->fetch_array($result));
-
+		
         $tpl->assign('numnews', $numnews);
         $tpl->assign('news', $news);
     }

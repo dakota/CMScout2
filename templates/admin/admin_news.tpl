@@ -20,14 +20,15 @@ function confirmunPublish(articleId)
 {if $addallowed}<div class="toplinks"><a href="{$pagename}&amp;action=new" title="Add News Item"><img src="{$tempdir}admin/images/add.png" alt="Add News Item" border="0" /></a>
 </div>{/if}
 {if $numnews > 0}
-<table width="100%" cellpadding="0" cellspacing="0" border="0" align="center" class="table sortable-onload-4-reverse rowstyle-alt paginate-15" id="sortTable">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" align="center" class="table sortable-onload-4r rowstyle-alt paginate-15" id="sortTable">
 <thead>
   <tr valign="top"> 
     <th width="5%" class="smallhead"></th>
     <th width="5%" class="smallhead">Publish</th>
     <th class="smallhead sortable">Title</th>
     <th class="smallhead sortable">Category</th>
-    <th width="20%" class="smallhead sortable-date">Date</th>
+    <th width="20%" class="smallhead sortable-date-dmy">Date</th>
+    <th width="20%" class="smallhead sortable-date-dmy">End Date</th>
   </tr>
   </thead>
   <tbody>
@@ -37,7 +38,8 @@ function confirmunPublish(articleId)
         <td class="text"><div align="center">{if $publishallowed}{if $news[newsloop].allowed == 0}<a href="javascript:confirmPublish({$news[newsloop].id})"><img src="{$tempdir}admin/images/publish.png" border="0" alt="Publish {$news[newsloop].event}" title="Publish {$news[newsloop].event}" /></a>{else}<a href="javascript:confirmunPublish({$news[newsloop].id})"><img src="{$tempdir}admin/images/unpublish.png" border="0" alt="Unpublish {$news[newsloop].event}" title="Unpublish {$news[newsloop].event}" /></a>{/if}{else}{if $news[newsloop].allowed == 0}<img src="{$tempdir}admin/images/publish_grey.gif" border="0" alt="Not allowed to publish" title="Not allowed to publish" />{else}<img src="{$tempdir}admin/images/unpublish_grey.gif" border="0" alt="Not allowed to unpublish" title="Not allowed to unpublish" />{/if}{/if}</div></td>
 		<td class="text"> <span class="hintanchor" title="Preview :: {$news[newsloop].news|escape}"><img src="{$tempdir}admin/images/information.png" alt="[i]"/></span>{$news[newsloop].title}</td>
 		<td class="text">{if $news[newsloop].category_name == ''}None{else}{$news[newsloop].category_name}{/if}</td>
-		<td class="text">{$news[newsloop].event+$timeoffset|date_format:"%Y-%m-%d"}</td>
+		<td class="text">{$news[newsloop].event+$timeoffset|date_format:"%d-%m-%Y"}</td>
+		<td class="text">{if $news[newsloop].date_end == 0}No end{else}{$news[newsloop].date_end+$timeoffset|date_format:"%d-%m-%Y"}{/if}</td>
 	  </tr>  
 	{/section}
     </tbody>
@@ -57,6 +59,10 @@ function confirmunPublish(articleId)
 	<label for="title" class="label">Title<span class="hintanchor" title="Title of the news item."><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label>
 	<div class="inputboxwrapper"><input type="text" name="title" id="title" size="100" value="{$shownews.title}" class="inputbox" onblur="checkElement('title', 'text', true, 0, 0, '');"/><br /><span class="fieldError" id="titleError">Required</span></div><br />
 
+	<label for="title" class="label">End date<span class="hintanchor" title="Date until this news item would be considered as expired. Leave blank if the item should not be expired."><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label>
+	<div class="inputboxwrapper"><input type="text" name="date_end" id="date_end" size="100" value="{if $shownews.date_end != 0}{$shownews.date_end|date_format:"%Y-%m-%d"}{/if}" class="inputbox dateformat-Y-ds-m-ds-d"/></div><br />
+
+	
 	<label for="attachment" class="label">Related Item<span class="hintanchor" title="Generaly this will be the item that the news is about, or related too."><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label>
 	<div class="inputboxwrapper">
 		<select name="attachment" id="attachment" class="inputbox">
