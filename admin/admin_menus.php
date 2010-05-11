@@ -42,31 +42,7 @@ if( !empty($getmodules) )
 	return;
 }
 else
-{
-    function get_end_pos($catid, $parent=0)
-    {
-        global $data;
-        
-        $catid = safesql($catid, "int");
-        $pos = 1;
-        do 
-        {
-            if ($parent == 0)
-            {
-                $temp = $data->select_query("menu_items", "WHERE cat = $catid AND pos = '$pos'");
-            }
-            else
-            {
-                $temp = $data->select_query("menu_items", "WHERE cat = $catid AND pos = '$pos' AND parent=$parent");
-            }
-            if ($data->num_rows($temp) != 0) 
-            {
-                $pos++;
-            }
-        } while ($data->num_rows($temp) != 0); 
-        return $pos;
-    }
-    
+{    
     $editFormAction = $_SERVER['PHP_SELF'];
     if (isset($_SERVER['QUERY_STRING'])) 
     {
@@ -144,7 +120,8 @@ else
             
             $item = $type==5 ? $url : safesql($item[0], "text");       
             $parent = isset($_POST['parent']) ? safesql($_POST['parent'], "int") : 0;
-            $pos = get_end_pos($id, $parent);
+			$pos = nextPosition('menu_items', 'pos', "cat=$cid AND parent=$parent");
+			
             $target = safesql($_POST['target'], "text");
             $option = safesql($_POST['options'], "int");
             
@@ -221,12 +198,8 @@ else
             $showperm = safesql($_POST['showperm'], "int");
             $expanded = safesql($_POST['expanded'], "int");
             $groups = safesql(serialize($_POST['groups']), "text");
-            $pos = 1;
-            do 
-            {
-                $temp = $data->select_query("menu_cats", "WHERE position = '$pos' AND side=$side");
-                if ($data->num_rows($temp) != 0) $pos++;
-            } while ($data->num_rows($temp) != 0); 
+			$pos = nextPosition('menu_cats', 'position', "side=$side");
+
             $sql = $data->insert_query("menu_cats", "NULL, $name, '0', '$pos', $side, '$show', '$showperm', '$expanded', 0, $groups", "Menus", "Added menu category $name");
             $action = "view";
             if ($sql)
@@ -245,12 +218,7 @@ else
             $pos = $oldcat['position'];
             if ($_POST['location'] != $oldcat['side'])
             {
-                $pos = 1;
-                do 
-                {
-                    $temp = $data->select_query("menu_cats", "WHERE position = '$pos' AND side=$side");
-                    if ($data->num_rows($temp) != 0) $pos++;
-                } while ($data->num_rows($temp) != 0); 
+				$pos = nextPosition('menu_cats', 'position', "side=$side");
             }
             $showperm = safesql($_POST['showperm'], "int");
             $show = safesql($_POST['show'], "int");
@@ -574,151 +542,23 @@ else
     }
     elseif($action == "moveup" && pageauth("menus", "edit") == 1)
     {
-        $sql = $data->select_query("menu_cats", "WHERE id=$id");
-        $row = $data->fetch_array($sql);
-        
-        $pos1 = $row['position'];
-    
-        $temppos = $pos1 - 1;
-        $sql = $data->select_query("menu_cats", "WHERE side='{$row['side']}' AND position='$temppos'");
-        $row2 = $data->fetch_array($sql);
-        
-        $pos2= $row2['position'];
-        if ($pos2 == 0 || $pos1 == 0)
-            header("Location: $server"."?page=menus&activetab={$row['side']}"); 
-            
-        $data->update_query("menu_cats", "position=$pos2", "id={$row['id']}");
-        $data->update_query("menu_cats", "position=$pos1", "id={$row2['id']}");
-        
-        $server = $_SERVER['PHP_SELF'];
-        header("Location: $server"."?page=menus");
+		moveItem('menu_cats', $id, 'up', 'side');
+		show_admin_message("Item moved", "$pagename&activetab={$_GET['activetab']}");
     }
     elseif($action == "movedown" && pageauth("menus", "edit") == 1)
     {
-        $sql = $data->select_query("menu_cats", "WHERE id=$id");
-        $row = $data->fetch_array($sql);
-        
-        $pos1 = $row['position'];
-        $temppos = $pos1 +1;
-        $sql = $data->select_query("menu_cats", "WHERE side='{$row['side']}' AND position='$temppos'");
-        $row2 = $data->fetch_array($sql);
-        
-        $pos2= $row2['position'];
-        $data->update_query("menu_cats", "position=$pos2", "id={$row['id']}", "", "", false);
-        $data->update_query("menu_cats", "position=$pos1", "id={$row2['id']}", "", "", false);
-        
-        $server = $_SERVER['PHP_SELF'];
-        header("Location: $server"."?page=menus&activetab={$row['side']}");
+		moveItem('menu_cats', $id, 'down', 'side');
+		show_admin_message("Item moved", "$pagename&activetab={$_GET['activetab']}");
     }
     elseif($action == "moveitemup" && pageauth("menus", "edit") == 1)
     {
-        $sql = $data->select_query("menu_items", "WHERE id='$id'");
-        $row = $data->fetch_array($sql);
-        
-        $pos1 = $row['pos'];
-        $temppos = $pos1-1;
-        if ($row['parent'] == 0)
-        {
-            $sql = $data->select_query("menu_items", "WHERE cat='$cid' AND pos='$temppos'");
-        }
-        else
-        {
-            $sql = $data->select_query("menu_items", "WHERE cat='$cid' AND pos='$temppos' AND parent='{$row['parent']}'");
-        }
-        $row2 = $data->fetch_array($sql);
-        
-        $pos2 = $row2['pos'];
-        
-        if ($pos2 == 0 || $pos1 == 0)
-            header("Location: $server"."?page=menus&action=catview&id=$cid"); 
-            
-        $data->update_query("menu_items", "pos='$pos2'", "id={$row['id']}", "", "", false);
-        $data->update_query("menu_items", "pos='$pos1'", "id={$row2['id']}", "", "", false);
-        
-        $server = $_SERVER['PHP_SELF'];
-        header("Location: $server"."?page=menus&action=catview&id=$cid");
+		moveItem('menu_items', $id, 'up', 'cat');
+		show_admin_message("Item moved", "$pagename&action=catview&id=$cid");
     }
     elseif($action == "moveitemdown" && pageauth("menus", "edit") == 1)
     {
-        $sql = $data->select_query("menu_items", "WHERE id='$id'");
-        $row = $data->fetch_array($sql);
-        
-        $pos1 = $row['pos'];
-        $temppos = $pos1 + 1;
-        if ($row['parent'] == 0)
-        {
-            $sql = $data->select_query("menu_items", "WHERE cat='$cid' AND pos='$temppos'");
-        }
-        else
-        {
-            $sql = $data->select_query("menu_items", "WHERE cat='$cid' AND pos='$temppos' AND parent='{$row['parent']}'");
-        }
-        $row2 = $data->fetch_array($sql);
-        
-        $pos2 = $row2['pos'];
-        $data->update_query("menu_items", "pos='$pos2'", "id={$row['id']}", "", "", false);
-        $data->update_query("menu_items", "pos='$pos1'", "id={$row2['id']}", "", "", false);
-        
-        $server = $_SERVER['PHP_SELF'];
-        header("Location: $server"."?page=menus&action=catview&id=$cid");
-    }
-    elseif ($action=="fixcat" && pageauth("menus", "edit") == 1)
-    {
-        $sql = $data->select_query("menu_cats", "WHERE side='left' ORDER BY position ASC");
-        if($data->num_rows($sql)>0)
-        {
-            $i = 1;
-            while($temp=$data->fetch_array($sql))
-            {
-                $data->update_query("menu_cats", "position=$i", "id={$temp['id']}");
-                $i++;
-                $j=1;
-                $sql2 = $data->select_query("menu_items", "WHERE cat={$temp['id']} ORDER BY pos ASC");
-                while($temp2=$data->fetch_array($sql2))
-                {
-                    $data->update_query("menu_items", "pos=$j", "id={$temp2['id']}");
-                    $j++;
-                }
-            }
-        }
-    
-        $sql = $data->select_query("menu_cats", "WHERE side='right' ORDER BY position ASC");
-        if($data->num_rows($sql)>0)
-        {
-            $i = 1;
-            while($temp=$data->fetch_array($sql))
-            {
-                $data->update_query("menu_cats", "position=$i", "id={$temp['id']}");
-                $i++;
-                $j=1;
-                $sql2 = $data->select_query("menu_items", "WHERE cat={$temp['id']} ORDER BY pos ASC");
-                while($temp2=$data->fetch_array($sql2))
-                {
-                    $data->update_query("menu_items", "pos=$j", "id={$temp2['id']}");
-                    $j++;
-                }
-            }
-        }
-    
-        $sql = $data->select_query("menu_cats", "WHERE side='top' ORDER BY position ASC");
-        if($data->num_rows($sql)>0)
-        {
-            $i = 1;
-            while($temp=$data->fetch_array($sql))
-            {
-                $data->update_query("menu_cats", "position=$i", "id={$temp['id']}");
-                $i++;
-                $j=1;
-                $sql2 = $data->select_query("menu_items", "WHERE cat={$temp['id']} ORDER BY pos ASC");
-                while($temp2=$data->fetch_array($sql2))
-                {
-                    $data->update_query("menu_items", "pos=$j", "id={$temp2['id']}");
-                    $j++;
-                }
-            }
-        }
-    
-         header("Location: $server"."?page=menus");
+		moveItem('menu_items', $id, 'down', 'cat');
+		show_admin_message("Item moved", "$pagename&action=catview&id=$cid");
     }
     elseif ($action == "publish" && pageauth("menus", "publish") == 1)
     {

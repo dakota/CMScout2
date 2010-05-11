@@ -128,27 +128,11 @@
 		}
 	}//select_query
 	
-    function select_fetch_one_row($tablename="", $special = false, $field="*") 
+    function select_fetch_one_row() 
     {
         global $check, $config, $debug;
-        
-		if ($this->queryresult != 0) 
-        {
-			$this->queryresult = 0;
-		}
-        
-        
-		$sql = "SELECT $field FROM {$this->dbprefix}$tablename ";
-		if ($special) 
-        {
-			$sql = $sql . $special;
-		}
-		if ($config["debug"] == "true") 
-        {
-			$debug .= $sql . "<br>";
-		}
 
-		$query = mysql_query($sql);
+		$query = call_user_func_array(array($this, 'select_query'), func_get_args());
 
 		if ($query) 
         {

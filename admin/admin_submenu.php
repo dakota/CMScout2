@@ -93,17 +93,8 @@ else
             }
                       
             $item = $type == 5 ? $url : safesql($item[0], "text");
-            
                      
-            $pos = 1;
-            do 
-            {
-                $temp = $data->select_query("submenu", "WHERE pos = '$pos' AND site=$safe_siteid");
-                if ($data->num_rows($temp) != 0) 
-                {
-                    $pos++;
-                }
-            } while ($data->num_rows($temp) != 0); 
+            $pos = nextPosition('submenu', 'pos', 'site = ' . $safe_siteid);
 
             $update = $data->insert_query("submenu", "'', $name, $item, $type, $safe_siteid, $pos");
             if ($update)
@@ -261,56 +252,13 @@ else
     } 
     elseif($action == "moveup" && pageauth("subsite", "edit"))
     {
-        $sql = $data->select_query("submenu", "WHERE id=$id");
-        $row = $data->fetch_array($sql);
-        
-        $pos1 = $row['pos'];
-        $temppos = $pos1 -1;
-        $sql = $data->select_query("submenu", "WHERE pos='$temppos' AND site=$safe_siteid");
-        $row2 = $data->fetch_array($sql);
-        
-        $pos2= $row2['pos'];
-        if ($pos2 == 0 || $pos1 == 0)
-        {
-            header("Location: $server"."?page=submenu&sid=$siteid");
-        }
-        $data->update_query("submenu", "pos=$pos2", "id='{$row['id']}'", "", "", false);
-        $data->update_query("submenu", "pos=$pos1", "id='{$row2['id']}'", "", "", false);
-        
-        $server = $_SERVER['PHP_SELF'];
-        header("Location: $server"."?page=subsite&subpage=submenu&sid=$siteid");
+		moveItem('submenu', $id, 'up', 'site');
+		show_admin_message("Item moved", "$pagename&subpage=submenu&sid=$siteid");
     }
     elseif($action == "movedown" && pageauth("subsite", "edit"))
     {
-        $sql = $data->select_query("submenu", "WHERE id=$id");
-        $row = $data->fetch_array($sql);
-        
-        $pos1 = $row['pos'];
-        $temppos = $pos1 +1;
-        $sql = $data->select_query("submenu", "WHERE pos='$temppos' AND site=$safe_siteid");
-        $row2 = $data->fetch_array($sql);
-        
-        $pos2= $row2['pos'];
-        $data->update_query("submenu", "pos=$pos2", "id={$row['id']}", "", "", false);
-        $data->update_query("submenu", "pos=$pos1", "id={$row2['id']}", "", "", false);
-        
-        $server = $_SERVER['PHP_SELF'];
-        header("Location: $server"."?page=subsite&subpage=submenu&sid=$siteid");
-    }
-    elseif ($action=="fixcat" && pageauth("subsite", "edit") == 1)
-    {
-        $sql = $data->select_query("submenu", "WHERE site=$safe_siteid ORDER BY pos ASC");
-        if($data->num_rows($sql)>0)
-        {
-            $i = 1;
-            while($temp=$data->fetch_array($sql))
-            {
-                $data->update_query("submenu", "pos=$i", "id={$temp['id']}");
-                $i++;
-            }
-        }
-    
-        header("Location: $server"."?page=subsite&subpage=submenu&sid=$siteid");
+		moveItem('submenu', $id, 'down', 'site');
+		show_admin_message("Item moved", "$pagename&subpage=submenu&sid=$siteid");
     }
     
     $tpl->assign("sitename", $sitename);

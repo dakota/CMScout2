@@ -2504,5 +2504,50 @@ function get_username($userid)
 
 }
 
+function moveItem($table, $id, $direction = 'up', $scope = array()) {
+	global $data;
+
+	$primaryKey = 'id';
+	if(is_array($table)) {
+		$primaryKey = $table[1];
+		$table = $table[0];
+	}
+	
+	if(!is_array($scope)) {
+		$scope = array($scope);
+	}
+	
+	$id = safesql($id, 'int');
+	$item = $data->select_fetch_one_row($table, 'WHERE '.$primaryKey.'='.$id);
+
+	if($item) {
+		$positionField = isset($item['position']) ? 'position' : 'pos';
+		$operator = $direction == 'up' ? '<' : '>';
+		$sortDirection = $direction == 'up' ? 'desc' : 'asc';
+
+		$condition = '`'.$positionField.'`' . $operator . $item[$positionField];
+		if(!empty($scope)) {
+			foreach($scope as $scoped) {
+				$condition .= ' AND ' . $scoped . '=' . safesql($item[$scoped], 'text');
+			}
+		}
+		
+		$nextItem = $data->select_fetch_one_row($table, 'WHERE ' . $condition . ' order by '.$positionField .' ' . $sortDirection . ' limit 1');
+		
+		if(!empty($nextItem)) {
+			$data->update_query($table, $positionField . '=' . $item[$positionField], $primaryKey.'=' . $nextItem[$primaryKey]);
+			$data->update_query($table, $positionField . '=' . $nextItem[$positionField], $primaryKey.'=' . $item[$primaryKey]);
+		}
+	}
+}
+
+function nextPosition($table, $positionField, $scope = '1=1')
+{
+	global $data, $debug;
+		
+	$position = $data->select_fetch_one_row($table, 'WHERE ' . $scope . ' ORDER BY ' . $positionField . ' DESC LIMIT 1');
+
+	return $position === false ? 1 : $position[$positionField]+1;
+}
 
 ?>

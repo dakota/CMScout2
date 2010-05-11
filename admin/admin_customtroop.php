@@ -42,22 +42,6 @@ if( !empty($getmodules) )
 }
 else
 {
-    function get_end_pos()
-    {
-        global $data;
-        
-        $pos = 1;
-        do 
-        {
-            $temp = $data->select_query("profilefields", "WHERE pos = '$pos' AND place=1");
-            if ($data->num_rows($temp) != 0) 
-            {
-                $pos++;
-            }
-        } while ($data->num_rows($temp) != 0); 
-        return $pos;
-    }
-
     $action = $_GET['action'];
     $id = $_GET['id'];
     $safe_id = safesql($id, "int");
@@ -102,7 +86,7 @@ else
                 $options = "''";
         }
         
-        $pos = get_end_pos();
+        $pos = nextPosition('profilefields', 'pos', 'place = 1');
         $options = safesql(serialize($options), "text");
         if ($action == "new")
         {

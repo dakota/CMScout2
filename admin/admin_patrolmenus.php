@@ -99,15 +99,7 @@ else
                       
             $item = $type == 5 ? $url : safesql($item[0], "text");
                      
-            $pos = 1;
-            do 
-            {
-                $temp = $data->select_query("patrolmenu", "WHERE pos = '$pos' AND patrol=$safe_patrolid");
-                if ($data->num_rows($temp) != 0) 
-                {
-                    $pos++;
-                }
-            } while ($data->num_rows($temp) != 0); 
+			$pos = nextPosition('patrolmenu', 'pos', 'patrol = ' . $safe_patrolid);
 
             $update = $data->insert_query("patrolmenu", "'', $name, $item, $type, $safe_patrolid, $pos");
             if ($update)
@@ -257,57 +249,15 @@ else
     } 
     elseif($action == "moveup" && pageauth("patrol", "edit"))
     {
-        $sql = $data->select_query("patrolmenu", "WHERE id=$id");
-        $row = $data->fetch_array($sql);
-        
-        $pos1 = $row['pos'];
-        $temppos = $pos1 -1;
-        $sql = $data->select_query("patrolmenu", "WHERE pos='$temppos' AND patrol=$safe_patrolid");
-        $row2 = $data->fetch_array($sql);
-        
-        $pos2= $row2['pos'];
-        if ($pos2 == 0 || $pos1 == 0)
-        {
-            header("Location: $server"."?page=patrol&subpage=patrolmenus&pid=$patrolid");
-        }
-        $data->update_query("patrolmenu", "pos=$pos2", "id='{$row['id']}'", "", "", false);
-        $data->update_query("patrolmenu", "pos=$pos1", "id='{$row2['id']}'", "", "", false);
-        
-        $server = $_SERVER['PHP_SELF'];
-        header("Location: $server"."?page=patrol&subpage=patrolmenus&pid=$patrolid");
+		moveItem('patrolmenu', $id, 'up', 'patrol');
+		show_admin_message("Item moved", "$pagename&subpage=patrolmenus&pid=$patrolid");
     }
     elseif($action == "movedown" && pageauth("patrol", "edit"))
     {
-        $sql = $data->select_query("patrolmenu", "WHERE id=$id");
-        $row = $data->fetch_array($sql);
-        
-        $pos1 = $row['pos'];
-        $temppos = $pos1 +1;
-        $sql = $data->select_query("patrolmenu", "WHERE pos='$temppos' AND patrol=$safe_patrolid");
-        $row2 = $data->fetch_array($sql);
-        
-        $pos2= $row2['pos'];
-        $data->update_query("patrolmenu", "pos=$pos2", "id={$row['id']}", "", "", false);
-        $data->update_query("patrolmenu", "pos=$pos1", "id={$row2['id']}", "", "", false);
-        
-        $server = $_SERVER['PHP_SELF'];
-        header("Location: $server"."?page=patrol&subpage=patrolmenus&pid=$patrolid");
+		moveItem('patrolmenu', $id, 'down', 'patrol');
+		show_admin_message("Item moved", "$pagename&subpage=patrolmenus&pid=$patrolid");
     }
-     elseif ($action=="fixcat" && pageauth("patrol", "edit") == 1)
-    {
-        $sql = $data->select_query("patrolmenu", "WHERE patrol=$safe_patrolid ORDER BY pos ASC");
-        if($data->num_rows($sql)>0)
-        {
-            $i = 1;
-            while($temp=$data->fetch_array($sql))
-            {
-                $data->update_query("patrolmenu", "pos=$i", "id={$temp['id']}");
-                $i++;
-            }
-        }
-    
-        header("Location: $server"."?page=subsite&subpage=submenu&sid=$siteid");
-    }   
+	
     $tpl->assign("patrolid", $patrolid);
     $tpl->assign("patrolname", $patrolname);
     $tpl->assign('cid', $cid);

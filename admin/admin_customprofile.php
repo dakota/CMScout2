@@ -42,22 +42,6 @@ if( !empty($getmodules) )
 }
 else
 {
-    function get_end_pos()
-    {
-        global $data;
-        
-        $pos = 1;
-        do 
-        {
-            $temp = $data->select_query("profilefields", "WHERE pos = '$pos' AND place=0");
-            if ($data->num_rows($temp) != 0) 
-            {
-                $pos++;
-            }
-        } while ($data->num_rows($temp) != 0); 
-        return $pos;
-    }
-
     $action = $_GET['action'];
     $id = $_GET['id'];
     $safe_id = safesql($id, "int");
@@ -103,7 +87,7 @@ else
                 $options = "''";
         }
         
-        $pos = get_end_pos();
+        $pos = nextPosition('profilefields', 'pos', 'place = 0');
         $options = safesql(serialize($options), "text");
         if ($action == "new")
         {
@@ -129,41 +113,13 @@ else
     }
     elseif($action == "moveup" && pageauth("customprofile", "edit") == 1)
     {
-        $sql = $data->select_query("profilefields", "WHERE id=$safe_id");
-        $row = $data->fetch_array($sql);
-        
-        $pos1 = $row['pos'];
-    
-        $temppos = $pos1 - 1;
-        $sql = $data->select_query("profilefields", "WHERE pos='$temppos' AND place=0");
-        $row2 = $data->fetch_array($sql);
-        
-        $pos2= $row2['pos'];
-        if ($pos2 == 0 || $pos1 == 0)
-            header("Location: $server"."?page=customprofile"); 
-            
-        $data->update_query("profilefields", "pos=$pos2", "id={$row['id']}");
-        $data->update_query("profilefields", "pos=$pos1", "id={$row2['id']}");
-        
-        $server = $_SERVER['PHP_SELF'];
-        header("Location: $server"."?page=customprofile");
+		moveItem('profilefields', $id, 'up', 'place');
+		show_admin_message("Item moved", "$pagename");
     }
     elseif($action == "movedown" && pageauth("customprofile", "edit") == 1)
     {
-        $sql = $data->select_query("profilefields", "WHERE id=$safe_id");
-        $row = $data->fetch_array($sql);
-        
-        $pos1 = $row['pos'];
-        $temppos = $pos1 +1;
-        $sql = $data->select_query("profilefields", "WHERE pos='$temppos' AND place=0");
-        $row2 = $data->fetch_array($sql);
-        
-        $pos2= $row2['position'];
-        $data->update_query("profilefields", "pos=$pos2", "id={$row['id']}");
-        $data->update_query("profilefields", "pos=$pos1", "id={$row2['id']}");
-        
-        $server = $_SERVER['PHP_SELF'];
-        header("Location: $server"."?page=customprofile");
+		moveItem('profilefields', $id, 'down', 'place');
+		show_admin_message("Item moved", "$pagename");
     }
     elseif ($action == "edit" && pageauth("customprofile", "edit") == 1)
     {

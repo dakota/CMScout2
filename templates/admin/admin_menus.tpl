@@ -56,7 +56,6 @@ function showitems(id)
 <h4 title="left">Left Menu</h4>
 <div id="left">
 <div class="toplinks">{if $addallowed}<a href="{$pagename}&amp;action=newcat&amp;side=left" title="Add menu"><img src="{$tempdir}admin/images/add.png" alt="Add menu" border="0" /></a>
-{/if}{if $editallowed}<a href="{$pagename}&amp;action=fixcat" title="Fix Positions"><img src="{$tempdir}admin/images/fix.png" alt="Fix Positions" border="0" /></a>
 {/if}</div>
 <table width="98%" cellpadding="0" cellspacing="0" border="0" align="center" class="table rowstyle-alt paginate-15" id="sortTable">
 <thead>
@@ -75,7 +74,7 @@ function showitems(id)
     <td class="text"><div align="center">{if $publishallowed}{if $left[cats].published == 0}<a href="admin.php?page=menus&amp;action=publish&amp;id={$left[cats].id}&amp;activetab=left"><img src="{$tempdir}admin/images/publish.png" border="0" alt="Publish {$left[cats].name}" title="Publish {$left[cats].name}" /></a>{else}<a href="admin.php?page=menus&amp;action=unpublish&amp;id={$left[cats].id}&amp;activetab=left"><img src="{$tempdir}admin/images/unpublish.png" border="0" alt="Unpublish {$left[cats].name}" title="Unpublish {$left[cats].name}" /></a>{/if}{else}{if $left[cats].published == 0}<img src="{$tempdir}admin/images/publish_grey.gif" border="0" alt="Not allowed to publish" title="Not allowed to publish" />{else}<img src="{$tempdir}admin/images/unpublish_grey.gif" border="0" alt="Not allowed to unpublish" title="Not allowed to unpublish" />{/if}{/if}</div></td>
     <td class="text">{$left[cats].name}</td>
     <td class="text">{$left[cats].numitems}</td>
-    <td class="text"><div align="center">{if $smarty.section.cats.iteration != 1}{if $editallowed}<a href="{$pagename}&amp;action=moveup&amp;id={$left[cats].id}"><img src="{$tempdir}admin/images/up.gif" border="0" alt="Up" title="Move Up" /></a>{else}<img src="{$tempdir}admin/images/up_grey.gif" border="0" alt="Editing Disabled" title="Editing Disabled" />{/if}{/if}{if $smarty.section.cats.iteration != $numleft}{if $editallowed}<a href="{$pagename}&amp;action=movedown&amp;id={$left[cats].id}"><img src="{$tempdir}admin/images/down.gif" border="0" alt="Up" title="Move Down" /></a>{else}<img src="{$tempdir}admin/images/down_grey.gif" border="0" alt="Editing Disabled" title="Editing Disabled" />{/if}{/if}</div></td>
+    <td class="text"><div align="center">{if $smarty.section.cats.iteration != 1}{if $editallowed}<a href="{$pagename}&amp;action=moveup&amp;id={$left[cats].id}&amp;activetab=left"><img src="{$tempdir}admin/images/up.gif" border="0" alt="Up" title="Move Up" /></a>{else}<img src="{$tempdir}admin/images/up_grey.gif" border="0" alt="Editing Disabled" title="Editing Disabled" />{/if}{/if}{if $smarty.section.cats.iteration != $numleft}{if $editallowed}<a href="{$pagename}&amp;action=movedown&amp;id={$left[cats].id}&amp;activetab=left"><img src="{$tempdir}admin/images/down.gif" border="0" alt="Up" title="Move Down" /></a>{else}<img src="{$tempdir}admin/images/down_grey.gif" border="0" alt="Editing Disabled" title="Editing Disabled" />{/if}{/if}</div></td>
   </tr>
   {sectionelse}
   <tr>
@@ -91,7 +90,7 @@ function showitems(id)
 <h4 title="right">Right Menu</h4>
 <div id="right">
 <div class="toplinks">{if $addallowed}<a href="{$pagename}&amp;action=newcat&amp;side=right" title="Add menu"><img src="{$tempdir}admin/images/add.png" alt="Add menu" border="0" /></a>
-{/if}{if $editallowed}<a href="{$pagename}&amp;action=fixcat" title="Fix Positions"><img src="{$tempdir}admin/images/fix.png" alt="Fix Positions" border="0" /></a>{/if}</div>
+{/if}</div>
 <table width="98%" cellpadding="0" cellspacing="0" border="0" align="center" class="table rowstyle-alt paginate-15" id="sortTable1">
 <thead>
   <tr>
@@ -109,7 +108,7 @@ function showitems(id)
     <td class="text"><div align="center">{if $publishallowed}{if $right[cats].published == 0}<a href="admin.php?page=menus&amp;action=publish&amp;id={$right[cats].id}&amp;activetab=right"><img src="{$tempdir}admin/images/publish.png" border="0" alt="Publish {$right[cats].name}" title="Publish {$right[cats].name}" /></a>{else}<a href="admin.php?page=menus&amp;action=unpublish&amp;id={$right[cats].id}&amp;activetab=right"><img src="{$tempdir}admin/images/unpublish.png" border="0" alt="Unpublish {$right[cats].name}" title="Unpublish {$right[cats].name}" /></a>{/if}{else}{if $right[cats].published == 0}<img src="{$tempdir}admin/images/publish_grey.gif" border="0" alt="Not allowed to publish" title="Not allowed to publish" />{else}<img src="{$tempdir}admin/images/unpublish_grey.gif" border="0" alt="Not allowed to unpublish" title="Not allowed to unpublish" />{/if}{/if}</div></td>
     <td class="text">{$right[cats].name}</td>
     <td class="text">{$right[cats].numitems}</td>
-    <td class="text"><div align="center">{if $smarty.section.cats.iteration != 1}{if $editallowed}<a href="{$pagename}&amp;action=moveup&amp;id={$right[cats].id}"><img src="{$tempdir}admin/images/up.gif" border="0" alt="Up" title="Move Up" /></a>{else}<img src="{$tempdir}admin/images/up_grey.gif" border="0" alt="Editing Disabled" title="Editing Disabled" />{/if}{/if}{if $smarty.section.cats.iteration != $numright}{if $editallowed}<a href="{$pagename}&amp;action=movedown&amp;id={$right[cats].id}"><img src="{$tempdir}admin/images/down.gif" border="0" alt="Up" title="Move Down" /></a>{else}<img src="{$tempdir}admin/images/down_grey.gif" border="0" alt="Editing Disabled" title="Editing Disabled" />{/if}{/if}</div></td>
+    <td class="text"><div align="center">{if $smarty.section.cats.iteration != 1}{if $editallowed}<a href="{$pagename}&amp;action=moveup&amp;id={$right[cats].id}&amp;activetab=right"><img src="{$tempdir}admin/images/up.gif" border="0" alt="Up" title="Move Up" /></a>{else}<img src="{$tempdir}admin/images/up_grey.gif" border="0" alt="Editing Disabled" title="Editing Disabled" />{/if}{/if}{if $smarty.section.cats.iteration != $numright}{if $editallowed}<a href="{$pagename}&amp;action=movedown&amp;id={$right[cats].id}&amp;activetab=right"><img src="{$tempdir}admin/images/down.gif" border="0" alt="Up" title="Move Down" /></a>{else}<img src="{$tempdir}admin/images/down_grey.gif" border="0" alt="Editing Disabled" title="Editing Disabled" />{/if}{/if}</div></td>
   </tr> 
   {sectionelse}
   <tr>
@@ -125,7 +124,6 @@ function showitems(id)
 <h4 title="top">Top Menu</h4>
 <div id="top">
 <div class="toplinks">{if $addallowed}<a href="{$pagename}&amp;action=newcat&amp;side=top" title="Add menu"><img src="{$tempdir}admin/images/add.png" alt="Add menu" border="0" /></a>
-{/if}{if $editallowed}<a href="{$pagename}&amp;action=fixcat" title="Fix Positions"><img src="{$tempdir}admin/images/fix.png" alt="Fix Positions" border="0" /></a>
 {/if}</div>
 <table width="98%" cellpadding="0" cellspacing="0" border="0" align="center" class="table rowstyle-alt paginate-15" id="sortTable2">
 <thead>
@@ -144,7 +142,7 @@ function showitems(id)
     <td class="text"><div align="center">{if $publishallowed}{if $top[cats].published == 0}<a href="admin.php?page=menus&amp;action=publish&amp;id={$top[cats].id}&amp;activetab=top"><img src="{$tempdir}admin/images/publish.png" border="0" alt="Publish {$top[cats].name}" title="Publish {$top[cats].name}" /></a>{else}<a href="admin.php?page=menus&amp;action=unpublish&amp;id={$top[cats].id}&amp;activetab=top"><img src="{$tempdir}admin/images/unpublish.png" border="0" alt="Unpublish {$top[cats].name}" title="Unpublish {$top[cats].name}" /></a>{/if}{else}{if $top[cats].published == 0}<img src="{$tempdir}admin/images/publish_grey.gif" border="0" alt="Not allowed to publish" title="Not allowed to publish" />{else}<img src="{$tempdir}admin/images/unpublish_grey.gif" border="0" alt="Not allowed to unpublish" title="Not allowed to unpublish" />{/if}{/if}</div></td>
     <td class="text">{$top[cats].name}</td>
     <td class="text">{$top[cats].numitems}</td>
-    <td class="text"><div align="center">{if $smarty.section.cats.iteration != 1}{if $editallowed}<a href="{$pagename}&amp;action=moveup&amp;id={$top[cats].id}"><img src="{$tempdir}admin/images/up.gif" border="0" alt="Up" title="Move Up" /></a>{else}<img src="{$tempdir}admin/images/up_grey.gif" border="0" alt="Editing Disabled" title="Editing Disabled" />{/if}{/if}{if $smarty.section.cats.iteration != $numtop}{if $editallowed}<a href="{$pagename}&amp;action=movedown&amp;id={$top[cats].id}"><img src="{$tempdir}admin/images/down.gif" border="0" alt="Up" title="Move Down" /></a>{else}<img src="{$tempdir}admin/images/down_grey.gif" border="0" alt="Editing Disabled" title="Editing Disabled" />{/if}{/if}</div></td>
+    <td class="text"><div align="center">{if $smarty.section.cats.iteration != 1}{if $editallowed}<a href="{$pagename}&amp;action=moveup&amp;id={$top[cats].id}&amp;activetab=top"><img src="{$tempdir}admin/images/up.gif" border="0" alt="Up" title="Move Up" /></a>{else}<img src="{$tempdir}admin/images/up_grey.gif" border="0" alt="Editing Disabled" title="Editing Disabled" />{/if}{/if}{if $smarty.section.cats.iteration != $numtop}{if $editallowed}<a href="{$pagename}&amp;action=movedown&amp;id={$top[cats].id}&amp;activetab=top"><img src="{$tempdir}admin/images/down.gif" border="0" alt="Up" title="Move Down" /></a>{else}<img src="{$tempdir}admin/images/down_grey.gif" border="0" alt="Editing Disabled" title="Editing Disabled" />{/if}{/if}</div></td>
   </tr>
       {sectionelse}
   <tr>

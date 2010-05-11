@@ -39,7 +39,7 @@ function itemss()
 {if $action == "view" || $action == ""}
 <div align="center"><div style="width:100%">
     
-    <div class="toplinks">{if $addallowed}<a href="{$pagename}&amp;action=new&amp;sid={$siteid}" title="Add Link"><img src="{$tempdir}admin/images/add.png" alt="Add Link" border="0" /></a>&nbsp;{/if}{if $editallowed}<a href="{$pagename}&amp;action=fixcat&amp;sid={$siteid}" title="Fix Positions"><img src="{$tempdir}admin/images/fix.png" alt="Fix Positions" border="0" /></a>&nbsp;{/if}<a href="admin.php?page=subsite&amp;subpage=subcontent&amp;sid={$siteid}" title="Content Manager"><img src="{$tempdir}admin/images/page.png" alt="Content Manager" border="0" /></a>&nbsp;<a href="admin.php?page=subsite" title="Back"><img src="{$tempdir}admin/images/back.png" alt="Back" border="0" /></a></div>
+    <div class="toplinks">{if $addallowed}<a href="{$pagename}&amp;action=new&amp;sid={$siteid}" title="Add Link"><img src="{$tempdir}admin/images/add.png" alt="Add Link" border="0" /></a>&nbsp;{/if}<a href="admin.php?page=subsite&amp;subpage=subcontent&amp;sid={$siteid}" title="Content Manager"><img src="{$tempdir}admin/images/page.png" alt="Content Manager" border="0" /></a>&nbsp;<a href="admin.php?page=subsite" title="Back"><img src="{$tempdir}admin/images/back.png" alt="Back" border="0" /></a></div>
 	<table width="98%" cellpadding="0" cellspacing="0" border="0" align="center" class="table rowstyle-alt paginate-15" id="sortTable">
 <thead>
   <tr>

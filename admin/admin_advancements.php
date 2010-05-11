@@ -85,75 +85,23 @@ else
     }
     elseif($action == "moveup" && pageauth("advancements", "edit"))
     {
-        $sql = $data->select_query("advancements", "WHERE ID=$id");
-        $row = $data->fetch_array($sql);
-        
-        $pos1 = $row['position'];
-        $temppos = $pos1 -1;
-        if($tempos <= 0) $tempos=1;
-        $sql = $data->select_query("advancements", "WHERE position='$temppos'");
-        $row2 = $data->fetch_array($sql);
-        
-        $pos2= $row2['position'];
-        $data->update_query("advancements", "position=$pos2", "ID={$row['ID']}", "", "", false);
-        $data->update_query("advancements", "position=$pos1", "ID={$row2['ID']}", "", "", false);
-        
-        $server = $_SERVER['PHP_SELF'];
-        header("Location: $server"."?page=advancements");
+		moveItem(array('advancements', 'ID'), $id, 'up');
+		show_admin_message("Item moved", "$pagename&action=viewsch&id=$sid");
     }
     elseif($action == "movedown" && pageauth("advancements", "edit"))
     {
-        $sql = $data->select_query("advancements", "WHERE ID=$id");
-        $row = $data->fetch_array($sql);
-        
-        $pos1 = $row['position'];
-        $temppos = $pos1 +1;
-        $sql = $data->select_query("advancements", "WHERE position='$temppos'");
-        $row2 = $data->fetch_array($sql);
-        
-        $pos2= $row2['position'];
-        $data->update_query("advancements", "position=$pos2", "ID={$row['ID']}", "", "", false);
-        $data->update_query("advancements", "position=$pos1", "ID={$row2['ID']}", "", "", false);
-        
-        $server = $_SERVER['PHP_SELF'];
-        header("Location: $server"."?page=advancements");
+		moveItem(array('advancements', 'ID'), $id, 'down');
+		show_admin_message("Item moved", "$pagename&action=viewsch&id=$sid");
     }
     elseif($action == "moveitemup" && pageauth("advancements", "edit"))
     {
-        $sql = $data->select_query("requirements", "WHERE ID='$rid'");
-        $row = $data->fetch_array($sql);
-        
-        $pos1 = $row['position'];
-        $temppos = $pos1 -1;
-        if($tempos <= 0) $tempos=1;
-        $sql = $data->select_query("requirements", "WHERE advancement='$id' AND position='$temppos'");
-        $row2 = $data->fetch_array($sql);
-        
-        $pos2 = $row2['position'];
-        $data->update_query("requirements", "position='$pos2'", "ID={$row['ID']}", "", "", false);
-        $data->update_query("requirements", "position='$pos1'", "ID={$row2['ID']}", "", "", false);
-        
-        $server = $_SERVER['PHP_SELF'];
-        header("Location: $server"."?page=advancements&action=viewadd&id=$id&sid=$sid");
+		moveItem(array('requirements', 'ID'), $rid, 'up', 'advancement');
+		show_admin_message("Item moved", "$pagename&action=viewadd&id=$id&sid=$sid");
     }
     elseif($action == "moveitemdown" && pageauth("advancements", "edit"))
     {
-        $sql = $data->select_query("requirements", "WHERE ID='$rid'");
-        $row = $data->fetch_array($sql);
-        
-        $pos1 = $row['position'];
-        $temppos = $pos1 +1;
-
-        $sql = $data->select_query("requirements", "WHERE advancement='$id' AND position='$temppos'");
-        $row2 = $data->fetch_array($sql);
-        
-        $pos2 = $row2['position'];
-
-        $data->update_query("requirements", "position='$pos2'", "ID={$row['ID']}", "", "", false);
-        $data->update_query("requirements", "position='$pos1'", "ID={$row2['ID']}", "", "", false);
-        
-        $server = $_SERVER['PHP_SELF'];
-        header("Location: $server"."?page=advancements&action=viewadd&id=$id&sid=$sid");
+		moveItem(array('requirements', 'ID'), $rid, 'down', 'advancement');
+		show_admin_message("Item moved", "$pagename&action=viewadd&id=$id&sid=$sid");
     }
     
     if ($Submit == 'Submit') 
@@ -162,15 +110,8 @@ else
         {
             $scheme = safesql($_GET['sid'], "int");
             $add = safesql($_POST['adv'], "text");
-            $pos = 1;
-            do 
-            {
-                $temp = $data->select_query("advancements", "WHERE position = '$pos'");
-                if ($data->num_rows($temp) != 0) 
-                {
-                    $pos++;
-                }
-            } while ($data->num_rows($temp) != 0); 		
+			$pos = nextPosition('advancements', 'position', 'scheme = ' . $scheme);
+
             $sql = $data->insert_query("advancements", "NULL, $add, '$pos', $scheme", "Advancements", "Added $add");
             if ($sql)
             {
@@ -203,15 +144,9 @@ else
         {
             $req= safesql($_POST['req'], "text");
             $desc= safesql($_POST['desc'], "text");
-            $pos = 1;
-            do 
-            {
-                $temp = $data->select_query("requirements", "WHERE advancement = '$id' AND position = '$pos'");
-                if ($data->num_rows($temp) != 0) 
-                {
-                    $pos++;
-                }
-            } while ($data->num_rows($temp) != 0); 
+			
+			$pos = nextPosition('advancements', 'position', 'advancement = ' . $id);
+			
             $sql = $data->insert_query("requirements", "NULL, $req, $desc, '$id', '$pos'", "Advancements", "Added $req to $id");
             $action = "viewadd";		
             if ($sql)

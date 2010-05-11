@@ -118,88 +118,23 @@ else
     }
     elseif($action == "moveup" && pageauth("forums", "edit") == 1)
     {
-        $sql = $data->select_query("forumscats", "WHERE id=$cid");
-        $row = $data->fetch_array($sql);
-        
-        $pos1 = $row['pos'];
-        $temppos = $pos1 -1;
-        if($tempos <= 0) $tempos=1;
-        $sql = $data->select_query("forumscats", "WHERE pos='$temppos'");
-        $row2 = $data->fetch_array($sql);
-        
-        $pos2= $row2['pos'];
-        $data->update_query("forumscats", "pos=$pos2", "id={$row['id']}", "", "", false);
-        $data->update_query("forumscats", "pos=$pos1", "id={$row2['id']}", "", "", false);
-        
-        $server = $_SERVER['PHP_SELF'];
-        header("Location: $server"."?page=forums");
+		moveItem('forumscats', $cid, 'up');
+		show_admin_message("Item moved", "$pagename");
     }
     elseif($action == "movedown" && pageauth("forums", "edit") == 1)
     {
-        $sql = $data->select_query("forumscats", "WHERE id=$cid");
-        $row = $data->fetch_array($sql);
-        
-        $pos1 = $row['pos'];
-        $temppos = $pos1 + 1;
-        $sql = $data->select_query("forumscats", "WHERE pos='$temppos'");
-        $row2 = $data->fetch_array($sql);
-        
-        $pos2= $row2['pos'];
-        $data->update_query("forumscats", "pos=$pos2", "id={$row['id']}", "", "", false);
-        $data->update_query("forumscats", "pos=$pos1", "id={$row2['id']}", "", "", false);
-        
-        $server = $_SERVER['PHP_SELF'];
-        header("Location: $server"."?page=forums");
+		moveItem('forumscats', $cid, 'down');
+		show_admin_message("Item moved", "$pagename");
     }
     elseif($action == "movefup" && pageauth("forums", "edit") == 1)
     {
-        $sql = $data->select_query("forums", "WHERE id=$fid");
-        $row = $data->fetch_array($sql);
-        
-        $pos1 = $row['pos'];
-        $temppos = $pos1 -1;
-        if($tempos <= 0) $tempos=1;
-        if ($row['parent'] == 0)
-        {
-            $sql = $data->select_query("forums", "WHERE pos='$temppos' AND cat=$cid AND parent=0");
-        }
-        else
-        {
-            $sql = $data->select_query("forums", "WHERE pos='$temppos' AND cat=$cid AND parent={$row['parent']}");
-        }
-        
-        $row2 = $data->fetch_array($sql);
-        
-        $pos2= $row2['pos'];
-        $data->update_query("forums", "pos=$pos2", "id={$row['id']}", "", "", false);
-        $data->update_query("forums", "pos=$pos1", "id={$row2['id']}", "", "", false);
-        
-        $server = $_SERVER['PHP_SELF'];
-        header("Location: $server"."?page=forums&action=view&cid=$cid");
+		moveItem('forums', $fid, 'up', array('cat', 'parent'));
+		show_admin_message("Item moved", "$pagename&action=view&cid=$cid");
     }
     elseif($action == "movefdown" && pageauth("forums", "edit") == 1)
     {
-        $sql = $data->select_query("forums", "WHERE id=$fid");
-        $row = $data->fetch_array($sql);
-        
-        $pos1 = $row['pos'];
-        $temppos = $pos1 + 1;
-        if ($row['parent'] == 0)
-        {
-            $sql = $data->select_query("forums", "WHERE pos='$temppos' AND cat=$cid AND parent=0");
-        }
-        else
-        {
-            $sql = $data->select_query("forums", "WHERE pos='$temppos' AND cat=$cid AND parent={$row['parent']}");
-        }
-        $row2 = $data->fetch_array($sql);
-        
-        $pos2= $row2['pos'];
-        $data->update_query("forums", "pos=$pos2", "id={$row['id']}", "", "", false);
-        $data->update_query("forums", "pos=$pos1", "id={$row2['id']}", "", "", false);
-        
-        $server = $_SERVER['PHP_SELF'];
-        header("Location: $server"."?page=forums&action=view&cid=$cid");
+		moveItem('forums', $fid, 'down', array('cat', 'parent'));
+		show_admin_message("Item moved", "$pagename&action=view&cid=$cid");
     }
     elseif($action == "add" && pageauth("forums", "add") == 1)
     {
@@ -212,15 +147,7 @@ else
             }
             $catname = safesql($_POST['catname'], "text");
         
-            $pos = 1;
-            do 
-            {
-                $temp = $data->select_query("forumscats", "WHERE pos = '$pos'");
-                if ($data->num_rows($temp) != 0) 
-                {
-                    $pos++;
-                }
-            } while ($data->num_rows($temp) != 0); 	
+			$pos = nextPosition('forumscats', 'pos');
             
             $sql = $data->insert_query("forumscats", "NULL, $catname, '$pos'", "Forums", "Category added");
             
@@ -279,22 +206,7 @@ else
             $limit = safesql($_POST['limit'], "int");   
             $copypermissions = $_POST['permissions'];
             
-            $pos = 1;
-            do 
-            {
-                if ($_POST['parent'] == 0)
-                {
-                    $temp = $data->select_query("forums", "WHERE pos = '$pos' AND cat=$cid");
-                }
-                else
-                {
-                    $temp = $data->select_query("forums", "WHERE pos = '$pos' AND cat=$cid AND parent=$parent");
-                }
-                if ($data->num_rows($temp) != 0) 
-                {
-                    $pos++;
-                }
-            } while ($data->num_rows($temp) != 0); 		
+			$pos = nextPosition('forums', 'pos', "cat=$cid AND parent=$parent");	
     
             $sql = $data->insert_query("forums", "NULL, $forumname, $desc, '', '', '', $cid, $pos, $parent, $limit");
             if($sql)
