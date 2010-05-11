@@ -43,7 +43,7 @@ th.bighead {
 th.smallhead{
   	background-color:#87A3B6;
   	color:#feffff;
-  	text-align:center;
+  	text-align:left;
   	font-size:12px;
   	font-family:Verdana, Arial, Helvetica, sans-serif;
   	font-weight:bold;
@@ -68,7 +68,8 @@ th.sortable-sortImage,
 th.sortable-sortFileSize
 {
 	cursor:pointer;
-	background-color:#87A3B6;
+	background:#87A3B6 url(images/bg_header_sortable.png) no-repeat scroll 0 0;
+	padding: 6px 12px 5px 22px;
   	color:#feffff;
 }
 
@@ -78,6 +79,12 @@ th.reverseSort a
 	color:#feffff;
 	outline:0 none;
 	text-decoration:none;
+}
+th.forwardSort {
+	background-image: url(images/bg_header_down.png);
+}
+th.reverseSort {
+	background-image: url(images/bg_header_up.png);
 }
 th.sort-active
 {
