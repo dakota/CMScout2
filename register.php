@@ -3,7 +3,7 @@
     FILENAME        :   register.php
     PURPOSE OF FILE :   Allows users to register on the site
     LAST UPDATED    :   25 September 2006
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.net
     LICENSE         :   GPL vs2.0
     
@@ -37,17 +37,9 @@ if ($check["id"] == -1)
     {
         $zone = $data->select_fetch_all_rows($numzones, "timezones", "ORDER BY offset ASC");
         
-        $sql = $data->select_query("profilefields", "WHERE place=0 AND register=1 ORDER BY pos ASC");
-        $fields = array();
-        $numfields = $data->num_rows($sql);
-        while ($temp =  $data->fetch_array($sql))
-        {
-            $temp['options'] = unserialize($temp['options']);
-            $fields[] = $temp;
-        }
+        $fields = getFields('place=0 AND register = 1');
 
         $tpl->assign('fields', $fields);
-        $tpl->assign('numfields', $numfields);
         $tpl->assign('zone', $zone);
         $tpl->assign('numzones', $numzones);
         $scriptList['datepicker'] = 1;
@@ -57,28 +49,9 @@ if ($check["id"] == -1)
     {
         if(validate($_POST['validation']))
         {
-            session_start();
-
             if ($config['registerimage'])
             {
-                if(!empty($_SESSION['freecap_word_hash']) && !empty($_POST['captcha']))
-                {
-                    if($_SESSION['hash_func'](strtolower($_POST['captcha']))==$_SESSION['freecap_word_hash'])
-                    {
-                        $_SESSION['freecap_attempts'] = 0;
-                        $_SESSION['freecap_word_hash'] = false;
-
-                        $word_ok = true;
-                    } 
-                    else 
-                    {
-                        $word_ok = false;
-                    }
-                } 
-                else 
-                {
-                    $word_ok = false;
-                }
+				$word_ok = confirmCaptcha();
             }
             else
             {
@@ -108,29 +81,8 @@ if ($check["id"] == -1)
                 {
                     show_message("There is already a user with that username, please select another username", "index.php?page=register&stage=2", true);
                 }
-                
-                $sql = $data->select_query("profilefields", "WHERE place=0 AND register=1 ORDER BY pos ASC");
-                $numfields = $data->num_rows($sql);
-                $custom = array();
-                while ($temp =  $data->fetch_array($sql))
-                {
-                    $temp['options'] = unserialize($temp['options']);
-                    if ($temp['type'] == 4)
-                    {
-                        $temp2 = array();
-                        $temp2[] = 0;
-                        for($i=1;$i<=$temp['options'][0];$i++)
-                        {
-                            $temp2[] = $_POST[$temp['name'] . $i] ? 1 : 0;
-                        }
-                        $custom[$temp['name']] = $temp2;
-                    }
-                    else
-                    {
-                        $custom[$temp['name']] = $_POST[$temp['name']];
-                    }
-                }   
-                $custom = safesql(serialize($custom), "text");
+
+				$custom = serializeCustomFields('place=0 AND register=1');
                 
                 $status = $config['accountactivation'] != 0 ? 0 : 1;
                 

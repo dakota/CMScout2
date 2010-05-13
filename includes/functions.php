@@ -3,7 +3,7 @@
     FILENAME        :   functions.php
     PURPOSE OF FILE :   General functions used through out CMScout
     LAST UPDATED    :   02 October 2006
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -72,7 +72,16 @@ function show_message ($message, $page=false, $postback = false, $customuid = fa
     }
     else
     {
-        header("Location:index.php");
+        if ($page)
+        {
+            header("Location:$page");
+            echo "<script>window.location='$page';</script>";
+        }
+        else
+        {
+            header("Location:index.php");
+        }
+        exit;
     }
     return;
 }
@@ -2550,4 +2559,89 @@ function nextPosition($table, $positionField, $scope = '1=1')
 	return $position === false ? 1 : $position[$positionField]+1;
 }
 
+function confirmCaptcha() {
+	global $config;
+
+	if($config['captcha_type'] == 0) {
+		session_start();
+
+		if(!empty($_SESSION['freecap_word_hash']) && !empty($_POST['captcha']))
+		{
+			if($_SESSION['hash_func'](strtolower($_POST['captcha']))==$_SESSION['freecap_word_hash'])
+			{
+				$_SESSION['freecap_attempts'] = 0;
+				$_SESSION['freecap_word_hash'] = false;
+
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else {
+		require_once('recaptchalib.php');
+		$privatekey = $config['recaptcha_private_key'];
+		$resp = recaptcha_check_answer ($privatekey,
+										$_SERVER["REMOTE_ADDR"],
+										$_POST["recaptcha_challenge_field"],
+										$_POST["recaptcha_response_field"]);
+
+		return $resp->is_valid;
+	}
+}
+
+function getFields($conditions) {
+	global $data;
+	
+	$sql = $data->select_query("profilefields", "WHERE $conditions ORDER BY pos ASC");
+	$fields = array();
+	$numfields = $data->num_rows($sql);
+	while ($temp =  $data->fetch_array($sql))
+	{
+		$temp['options'] = unserialize($temp['options']);
+		$fields[] = $temp;
+	}
+
+	return $fields;
+}
+
+function customFields($conditions) {
+	global $data;
+
+	if(!is_array($conditions)) {
+		$conditions = getFields($conditions);
+	}
+	
+	$custom = array();
+	foreach($conditions as $temp)
+	{
+		$temp['options'] = unserialize($temp['options']);
+		if ($temp['type'] == 4)
+		{
+			$temp2 = array();
+			$temp2[] = 0;
+			for($i=1;$i<=$temp['options'][0];$i++)
+			{
+				$temp2[] = $_POST[$temp['name'] . $i] ? 1 : 0;
+			}
+			$custom[$temp['name']] = $temp2;
+		}
+		else
+		{
+			$custom[$temp['name']] = $_POST[$temp['name']];
+		}
+	}
+	
+	return $custom;
+}
+
+function serializeCustomFields($conditions) {
+	return safesql(serialize(customFields($conditions)), "text");
+}
 ?>

@@ -3,7 +3,7 @@
     FILENAME        :   post.php
     PURPOSE OF FILE :   Manages posting new posts and editing of posts
     LAST UPDATED    :   19 July 2006
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -38,28 +38,9 @@ if (isset($_SERVER['QUERY_STRING'])) {
 }
 $tpl->assign("postaction", $postaction);
 
-session_start();
-
 if ($config['registerimage'] && $check['id'] == -1 && !$edit)
 {
-	if(!empty($_SESSION['freecap_word_hash']) && !empty($_POST['captcha']))
-	{
-	    if($_SESSION['hash_func'](strtolower($_POST['captcha']))==$_SESSION['freecap_word_hash'])
-	    {
-		$_SESSION['freecap_attempts'] = 0;
-		$_SESSION['freecap_word_hash'] = false;
-
-		$word_ok = true;
-	    } 
-	    else 
-	    {
-		$word_ok = false;
-	    }
-	} 
-	else 
-	{
-	    $word_ok = false;
-	}
+	$word_ok = confirmCaptcha();
 }
 else
 {
@@ -118,7 +99,7 @@ if(!$edit && !$new && $userauths['reply'])
     }
     elseif($_POST['submit'] == "Submit" && !$word_ok)
     {
-	show_message("You entered the CAPTCHA code incorrectly, please try again.", "index.php?page=forums&action=post&t=$tid&menuid=$menuid", true);
+		show_message("You entered the CAPTCHA code incorrectly, please try again.", "index.php?page=forums&action=post&t=$tid&menuid=$menuid", true);
     }
     elseif($_POST['preview'] == "Preview Post")
     {

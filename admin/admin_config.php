@@ -3,7 +3,7 @@
     FILENAME        :   admin_config.php
     PURPOSE OF FILE :   Manage configuration of site
     LAST UPDATED    :   25 September 2006
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -100,7 +100,11 @@ else
                             "defaultview" => true,
                             "startday" => true,
                             "pagephoto" => true,
-    						"defaultZone" => true);
+    						"defaultZone" => true,
+							"captcha_type" => true,
+							"recaptcha_public_key" => true,
+							"recaptcha_private_key" => true,
+		);
                             
     $submit = $_POST['Submit'];
     $new = array();

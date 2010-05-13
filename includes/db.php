@@ -147,43 +147,22 @@
 		}
     }//select_fetch
     
-    function select_fetch_all_rows(&$numrows, $tablename="", $special = false, $field="*") 
+    function select_fetch_all_rows(&$numrows) 
     {
         global $check, $config, $debug;
         
-		if ($this->queryresult != 0) 
-        {
-			$this->queryresult = 0;
-		}
-        
-        
-		$sql = "SELECT $field FROM {$this->dbprefix}$tablename ";
-		if ($special) 
-        {
-			$sql = $sql . $special;
-		}
-		if ($config["debug"] == "true") 
-        {
-			$debug .= $sql . "<br>";
-		}
-
-		$query = mysql_query($sql);
-
+		$args = func_get_args();
+		unset($args[0]);
+		$query = call_user_func_array(array($this, 'select_query'), $args);
+		
 		if ($query) 
         {
 			$this->queryresult = $query;
             $this->counter++;
-            $numrows = mysql_num_rows($query);
-            $temp = array();
-            while ($temp[] = mysql_fetch_array($query));
+            $numrows = $this->num_rows($query);
             $return = array();
-            for ($i=0;$i<$numrows;$i++)
-            {
-                if (is_array($temp[$i]))
-                {
-                    $return[] = $temp[$i];
-                }
-            }
+            while ($return[] = $this->fetch_array($query));
+
 			return $return;
 		} 
         else 
@@ -213,7 +192,7 @@
         {
 			$this->queryresult = $query;
             $this->counter++;
-			return $this->queryresult;
+			return mysql_insert_id();
 		} 
         else
         {

@@ -66,7 +66,21 @@
 
     <div class="fieldItem"><label for="activetime" class="label">Active Length<span class="hintanchor" title="Advanced Users Only :: Length of time a logged on user will remain in the active list (In seconds). Default value is 300."><img src="{$tempdir}admin/images/exclamation.png" alt="[!]"/></span></label>
     <div class="inputboxwrapper">{if $editallowed}<input type="text" name="activetime" id="activetime" value="{$configs.activetime}" class="inputbox" onblur="checkElement('activetime', 'number', true, 0, 0, '');" /><br /><span class="fieldError" id="activetimeError">Required: Must be a number.</span>{else}{$configs.activetime}{/if}</div></div><br />
-    </div>
+
+    <div class="fieldItem"><span class="label">CAPTCHA image<span class="hintanchor" title="Displays a CAPTCHA image when a user registers or when a guest posts on the forums. This verifies that the user is a human and prevents spam-bots from registering or posting"><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></span>
+    <div class="inputboxwrapper">{if $editallowed}<input type="radio" name="registerimage" id="registerimage:yes" value="1" {if $configs.registerimage == 1}checked="checked"{/if} /><label for="registerimage:yes">Yes</label>
+    <input name="registerimage" id="registerimage:no" type="radio" value="0" {if $configs.registerimage == 0}checked="checked"{/if} /><label for="registerimage:no">No</label>{else}{if $configs.registerimage}Yes{else}No{/if}{/if}</div></div><br />
+
+    <div class="fieldItem"><span class="label">Type of CAPTCHA to use<span class="hintanchor" title="Select what type of CAPTCHA image you wish to use. reCAPTCHA is more secure then the built in method but requires you to register on the ReCAPTCHA website."><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></span>
+    <div class="inputboxwrapper">{if $editallowed}<input type="radio" name="captcha_type" id="captcha_type:yes" value="0" {if $configs.captcha_type == 0}checked="checked"{/if} /><label for="captcha_type:yes">Built in CAPTCHA</label>
+    <input name="captcha_type" id="captcha_type:no" type="radio" value="1" {if $configs.captcha_type == 1}checked="checked"{/if} /><label for="captcha_type:no">reCAPTCHA</label>{else}{if $configs.captcha_type}reCAPTCHA{else}Built in CAPTCHA{/if}{/if}</div></div><br />
+
+    <div class="fieldItem"><label for="recaptcha_public_key" class="label">reCAPTCHA Public Key<span class="hintanchor" title="The public key for your reCAPTCHA account."><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label>
+    <div class="inputboxwrapper">{if $editallowed}<input type="text" name="recaptcha_public_key" id="recaptcha_public_key" value="{$configs.recaptcha_public_key}" size="20" class="inputbox" />{else}{$configs.recaptcha_public_key}{/if}</div></div><br />
+
+    <div class="fieldItem"><label for="recaptcha_private_key" class="label">reCAPTCHA Private Key<span class="hintanchor" title="The private key for your reCAPTCHA account."><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label>
+    <div class="inputboxwrapper">{if $editallowed}<input type="text" name="recaptcha_private_key" id="recaptcha_private_key" value="{$configs.recaptcha_private_key}" size="20" class="inputbox" />{else}{$configs.recaptcha_private_key}{/if}</div></div><br />
+</div>
     {if $editallowed}<div class="submitWrapper">
         <input type="submit" name="Submit" value="Update Config"  class="button" />&nbsp;
         <input type="reset" name="Submit2" value="Reset" class="button" />
@@ -115,10 +129,6 @@
     <div class="fieldItem"><span class="label">Allow registration<span class="hintanchor" title="Are users allowed to register to join the site?"><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></span>
     <div class="inputboxwrapper">{if $editallowed}<input type="radio" name="register" id="register:yes" value="1" {if $configs.register == 1}checked="checked"{/if} /><label for="register:yes">Yes</label>
     <input name="register" id="register:no" type="radio" value="0" {if $configs.register == 0}checked="checked"{/if} /><label for="register:no">No</label>{else}{if $configs.register}Yes{else}No{/if}{/if}</div></div><br />
-
-    <div class="fieldItem"><span class="label">CAPTCHA image<span class="hintanchor" title="Displays a CAPTCHA image when a user registers or when a guest posts on the forums. This verifies that the user is a human and prevents spam-bots from registering or posting"><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></span>
-    <div class="inputboxwrapper">{if $editallowed}<input type="radio" name="registerimage" id="registerimage:yes" value="1" {if $configs.registerimage == 1}checked="checked"{/if} /><label for="registerimage:yes">Yes</label>
-    <input name="registerimage" id="registerimage:no" type="radio" value="0" {if $configs.registerimage == 0}checked="checked"{/if} /><label for="registerimage:no">No</label>{else}{if $configs.registerimage}Yes{else}No{/if}{/if}</div></div><br />
 
     <div class="fieldItem"><span class="label">Duplicate email<span class="hintanchor" title="Allow more than one user to use an email address."><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></span>
     <div class="inputboxwrapper">{if $editallowed}<input type="radio" name="dubemail" id="dubemail:yes" value="1" {if $configs.dubemail == 1}checked="checked"{/if} /><label for="dubemail:yes">Yes</label>
