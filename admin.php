@@ -255,7 +255,7 @@ else
   
 
     $pagename = "admin.php";
-    $pagename = isset($_GET['subpage']) ? $pagename . "?page=$page&amp;subpage=" . $_GET['subpage'] : $pagename . "?page=$page";
+    $pagename = isset($_GET['subpage']) ? $pagename . "?page=$page&subpage=" . $_GET['subpage'] : $pagename . "?page=$page";
     if (file_exists("admin/admin_" . $page . $phpex))
     {
         if ((pageauth($page, "access") == 0) && $page != "contentManager")

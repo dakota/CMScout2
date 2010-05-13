@@ -1,14 +1,21 @@
-<h2>Custom Profile Manager</h2>
+<h2>{if $title != ''}{$title}{else}Custom Profile Manager{/if}</h2>
 {if ($action!="edit" || $editallowed == 0) && ($action!="new" || $addallowed == 0)}
-  {if $addallowed}<div class="toplinks"><a href="{$pagename}&amp;action=new" title="Add custom field"><img src="{$tempdir}admin/images/add.png" alt="Add custom field" border="0" /></a>
-</div>{/if}
+ {if $addallowed}
+	<div class="toplinks">
+		<a href="{if $baseLink}{$baseLink}{else}{$pagename}{/if}&amp;action=new" title="Add custom field"><img src="{$tempdir}admin/images/add.png" alt="Add custom field" border="0" /></a>
+		<a href="{$backLink}" title="Back"><img src="{$tempdir}admin/images/back.png" alt="Back" border="0" /></a>
+	</div>
+{/if}
 {if $numfields > 0}
 {literal}
   <script type="text/javascript">
 <!--
 function confirmDelete(articleId) {
-if (confirm("This will delete this field. Continue?"))
-document.location = "admin.php?page=customprofile&action=delete&id=" + articleId;
+	if (confirm("This will delete this field. Continue?")) {
+	{/literal}
+		document.location = "{if $baseLink}{$baseLink}{else}admin.php?page=customprofile{/if}&action=delete&id=" + articleId;
+	{literal}
+	}
 }
 //-->
   </script>
@@ -25,17 +32,17 @@ document.location = "admin.php?page=customprofile&action=delete&id=" + articleId
 <tbody>
  {section name=fields loop=$numfields}
 	  <tr class="text" valign="top"> 
-		<td class="text" style="text-align:center;">{if $editallowed}<a href="{$pagename}&amp;id={$field[fields].id}&amp;action=edit"><img src="{$tempdir}admin/images/edit.gif" border="0" alt="Edit Authorizations for {$field[fields].name}" title="Edit Authorizations for {$field[fields].name}" /></a>{else}<img src="{$tempdir}admin/images/edit_grey.gif" border="0" alt="Editing Disabled" title="Editing Disabled" />{/if}&nbsp;&nbsp;{if $deleteallowed}<a href="javascript:confirmDelete({$field[fields].id})"><img src="{$tempdir}admin/images/delete.gif" border="0" alt="Remove Authorizations for {$field[fields].name}" title="Remove Authorizations for {$field[fields].name}" /></a>{else}<img src="{$tempdir}admin/images/delete_grey.gif" border="0" alt="Deleting Disabled" title="Deleting Disabled" />{/if}</td>
+		<td class="text" style="text-align:center;">{if $editallowed}<a href="{if $baseLink}{$baseLink}{else}{$pagename}{/if}&amp;id={$field[fields].id}&amp;action=edit"><img src="{$tempdir}admin/images/edit.gif" border="0" alt="Edit Authorizations for {$field[fields].name}" title="Edit Authorizations for {$field[fields].name}" /></a>{else}<img src="{$tempdir}admin/images/edit_grey.gif" border="0" alt="Editing Disabled" title="Editing Disabled" />{/if}&nbsp;&nbsp;{if $deleteallowed}<a href="javascript:confirmDelete({$field[fields].id})"><img src="{$tempdir}admin/images/delete.gif" border="0" alt="Remove Authorizations for {$field[fields].name}" title="Remove Authorizations for {$field[fields].name}" /></a>{else}<img src="{$tempdir}admin/images/delete_grey.gif" border="0" alt="Deleting Disabled" title="Deleting Disabled" />{/if}</td>
 		<td class="text">
         <span class="hintanchor" title="Information :: <b>Name:</b> {$field[fields].name}<br /><b>Required:</b> {if $field[fields].required}Yes{else}No{/if}<br /><b>Register Field:</b> {if $field[fields].register}Yes{else}No{/if}<br /><b>Public Field:</b> {if $field[fields].profileview}Yes{else}No{/if}"><img src="{$tempdir}admin/images/information.png" alt="[i]"/></span>{$field[fields].query}</td>
         <td class="text">{if $field[fields].type == 1}Text Input{elseif $field[fields].type == 2}Text Area{elseif $field[fields].type == 3}Radio buttons{elseif $field[fields].type == 4}Checkboxes{elseif $field[fields].type == 5}Select Box{elseif $field[fields].type == 6}Date Input{/if}</td>
-        <td class="text" style="text-align:center;">{if $smarty.section.fields.iteration != 1}{if $editallowed}<a href="{$pagename}&amp;action=moveup&amp;id={$field[fields].id}"><img src="{$tempdir}admin/images/up.gif" border="0" alt="Up" title="Move Up" /></a>{else}<img src="{$tempdir}admin/images/up_grey.gif" border="0" alt="Editing Disabled" title="Editing Disabled" />{/if}{/if}{if $smarty.section.fields.iteration != $numfields}{if $editallowed}<a href="{$pagename}&amp;action=movedown&amp;id={$field[fields].id}"><img src="{$tempdir}admin/images/down.gif" border="0" alt="Up" title="Move Down" /></a>{else}<img src="{$tempdir}admin/images/down_grey.gif" border="0" alt="Editing Disabled" title="Editing Disabled" />{/if}{/if}</td>
+        <td class="text" style="text-align:center;">{if $smarty.section.fields.iteration != 1}{if $editallowed}<a href="{if $baseLink}{$baseLink}{else}{$pagename}{/if}&amp;action=moveup&amp;id={$field[fields].id}"><img src="{$tempdir}admin/images/up.gif" border="0" alt="Up" title="Move Up" /></a>{else}<img src="{$tempdir}admin/images/up_grey.gif" border="0" alt="Editing Disabled" title="Editing Disabled" />{/if}{/if}{if $smarty.section.fields.iteration != $numfields}{if $editallowed}<a href="{if $baseLink}{$baseLink}{else}{$pagename}{/if}&amp;action=movedown&amp;id={$field[fields].id}"><img src="{$tempdir}admin/images/down.gif" border="0" alt="Up" title="Move Down" /></a>{else}<img src="{$tempdir}admin/images/down_grey.gif" border="0" alt="Editing Disabled" title="Editing Disabled" />{/if}{/if}</td>
       </tr>  
     {/section}
     </tbody>
 </table>
 {else}
-<div align="center">No custom profile fields</div>
+<div align="center">No {if $type}{$type}{else}custom profile{/if} fields</div>
 {/if}
 {elseif ($action == "new" && $addallowed == 1) || ($action == "edit" && $editallowed == 1)}
 {literal}
@@ -138,7 +145,7 @@ function movedown(number)
 {include file="../scripts/validator.tpl"}
 </script>
 <div align="center">
-<form name="forms" id="forms" method="post" action="">
+<form name="forms" id="forms" method="post">
 <fieldset class="formlist">
 <legend>{if $action=="edit"}Edit{else}Add{/if} Field</legend>
 <div class="field">
@@ -151,9 +158,11 @@ function movedown(number)
 
 <div class="fieldItem"><span class="label">Required<span class="hintanchor" title="Required :: Is the user required to enter a value for this field."><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></span><div class="inputboxwrapper"><input type="radio" name="required" id="requiredyes" value="1" {if $item.required}checked="checked"{/if}/><label for="requiredyes">Yes</label>&nbsp;<input type="radio" name="required" id="requiredno" value="0" {if $action == "edit"}{if !$item.required}checked="checked"{/if}{else}checked="checked"{/if}/><label for="requiredno">No</label></div></div><br />
 
+{if !$notProfile}
 <div class="fieldItem"><span class="label">Registration Field<span class="hintanchor" title="Required :: Should this field be shown on the registration screen."><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></span><div class="inputboxwrapper"><input type="radio" name="register" id="registeryes" value="1" {if $item.register}checked="checked"{/if}/><label for="registeryes">Yes</label>&nbsp;<input type="radio" name="register" id="registerno" value="0" {if $action == "edit"}{if !$item.register}checked="checked"{/if}{else}checked="checked"{/if}/><label for="registerno">No</label></div></div><br />
 
 <div class="fieldItem"><span class="label">Public Field<span class="hintanchor" title="Required :: Should the value of this field be shown on the users public profile."><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></span><div class="inputboxwrapper"><input type="radio" name="profileview" id="profileviewyes" value="1" {if $item.profileview}checked="checked"{/if}/><label for="profileviewyes">Yes</label>&nbsp;<input type="radio" name="profileview" id="profileviewno" value="0" {if $action == "edit"}{if !$item.profileview}checked="checked"{/if}{else}checked="checked"{/if}/><label for="profileviewno">No</label></div></div><br />
+{/if}
 
 <div class="fieldItem"><label for="type" class="label">Type<span class="hintanchor" title="Required :: What type of field is this."><img src="{$tempdir}admin/images/help.png" alt="[?]"/></span></label><div class="inputboxwrapper">
   <select name="type" id="type" class="inputbox" onchange="changetype();">

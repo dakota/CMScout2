@@ -425,7 +425,7 @@ $onDomReady .= "var r = new MooRainbow('colourSelector', {
                     $options = "''";
             }
             
-            $pos = 0;
+            $pos = nextPosition('profilefields', 'pos', "place=2 AND eventid=$eventid");
             $options = safesql(serialize($options), "text");
             if ($action == "newfield")
             {

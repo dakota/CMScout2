@@ -3,7 +3,7 @@
     FILENAME        :   index.php
     PURPOSE OF FILE :   Main file, fetches pages
     LAST UPDATED    :   25 May 2006
-    COPYRIGHT       :   © 2005 CMScout Group
+    COPYRIGHT       :   ï¿½ 2005 CMScout Group
     WWW             :   www.cmscout.za.org
     LICENSE         :   GPL vs2.0
     
@@ -228,7 +228,6 @@ $tpl->assign("profileAllowed", get_auth("profile", 0));
 $tpl->assign("pmAllowed", get_auth("pmmain", 0));
 include("page_footer.php");
 
-
 //Check for user message
 $uid = safesql($check['uid'], "text");
 $messages = $data->select_fetch_one_row("messages", "WHERE uid=$uid AND type <> 3");
@@ -260,4 +259,3 @@ elseif (isset($_GET['ae']) && $_GET['ae'] == 1)
 include('scripts.php');
 
 $tpl->display('index.tpl');
-?>
